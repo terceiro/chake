@@ -1,0 +1,4 @@
+a70248580db38a6659bba1887c16ead12d8d2f6c  config.rb
+3f89ae2a25368bb08d8ecbe1b12028cdbd29bb23  nodes.yaml
+7e805ef45e1ee657afb162fd98e882caf9113bc0  cookbooks/myhost/recipes/default.rb
+ff86a66c0e8bb3dd6f526ab94ffd57f23c7153f1  Rakefile

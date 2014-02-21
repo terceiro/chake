@@ -1,0 +1,3 @@
+lvh.me:
+  run_list:
+    - recipe[myhost]

@@ -1,0 +1,11 @@
+begin
+  require 'chake'
+rescue LoadError
+  $: << '../../lib'
+  retry
+end
+
+desc 'removes everything'
+task :clean do
+  rm_rf Dir.glob('*') - ['Rakefile']
+end
