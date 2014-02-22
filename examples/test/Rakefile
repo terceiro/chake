@@ -1,9 +1,5 @@
-begin
-  require 'chake'
-rescue LoadError
-  $: << '../../lib'
-  retry
-end
+$: << '../../lib' # this shouldn't be needed when you have chake installed
+require 'chake'
 
 desc 'removes everything'
 task :clean do
