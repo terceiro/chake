@@ -34,4 +34,17 @@ describe Chake::Node do
     expect(with_data.data).to be_a(Hash)
   end
 
+  [:run, :run_as_root, :rsync_dest].each do |method|
+    it("delegates #{method} to backend") do
+      node = simple
+
+      backend = double
+      args = Object.new
+      node.stub(:backend).and_return(backend)
+
+      backend.should_receive(method).with(args)
+      node.send(method, args)
+    end
+  end
+
 end
