@@ -5,21 +5,23 @@ require 'json'
 require 'tmpdir'
 require 'readline'
 
-$nodes_file = ENV['NODES'] || 'nodes.yaml'
-$node_data = File.exists?($nodes_file) && YAML.load_file($nodes_file) || {}
-$nodes = $node_data.keys
+require 'chake/node'
 
-$sample_nodes = <<EOF
-host1.my.tld:
-  run_list:
-    - recipe[myhost]
-EOF
+nodes_file = ENV['NODES'] || 'nodes.yaml'
+node_data = File.exists?(nodes_file) && YAML.load_file(nodes_file) || {}
+$nodes = node_data.map { |node,data| Chake::Node.new(node, data) }
+
 
 desc "Initializes current directory with sample structure"
 task :init do
   if !File.exists?('nodes.yaml')
     File.open('nodes.yaml', 'w') do |f|
-      f.write($sample_nodes)
+      sample_nodes = <<EOF
+host1.my.tld:
+  run_list:
+    - recipe[myhost]
+EOF
+      f.write(sample_nodes)
       puts "→ nodes.yaml"
     end
   end
@@ -45,7 +47,9 @@ end
 
 desc 'list nodes'
 task :nodes do
-  puts $nodes
+  $nodes.each do |node|
+    puts "%-40s %-5s\n" % [node.hostname, node.backend]
+  end
 end
 
 def encrypted_for(node)
@@ -71,23 +75,25 @@ end
 
 $nodes.each do |node|
 
-  desc "bootstrap #{node}"
-  task "bootstrap:#{node}" do
+  hostname = node.hostname
+
+  desc "bootstrap #{hostname}"
+  task "bootstrap:#{hostname}" do
     mkdir_p '.tmp', :verbose => false
-    config = '.tmp/' + node + '.json'
+    config = '.tmp/' + hostname + '.json'
 
     seen_before = File.exists?(config)
 
     # overwrite config with current contents
     File.open(config, 'w') do |f|
-      json_data = $node_data[node]
+      json_data = node.data
       f.write(JSON.dump(json_data))
       f.write("\n")
     end
 
     unless seen_before
       begin
-        sh "ssh root@#{node} 'apt-get -q -y install rsync chef'"
+        node.run_as_root('apt-get -q -y install rsync chef')
       rescue
         rm_f config
         raise
@@ -96,41 +102,40 @@ $nodes.each do |node|
 
   end
 
-  desc "upload data to #{node}"
-  task "upload:#{node}" do
-    encrypted = encrypted_for(node)
-    excludes = encrypted.values.map { |f| "--exclude #{f}" }.join(' ')
+  desc "upload data to #{hostname}"
+  task "upload:#{hostname}" do
+    encrypted = encrypted_for(hostname)
+    rsync_excludes = (encrypted.values + encrypted.keys).map { |f| ["--exclude", f] }.flatten
 
-    rsync = "rsync -avp --delete --exclude .git/ #{excludes}"
+    rsync = "rsync", "-avp", "--exclude", ".git/"
+    rsync_logging = Rake.application.options.silent && '--quiet' || '--verbose'
 
-    Dir.mktmpdir do |tmpdir|
-      sh "#{rsync} --quiet ./ #{tmpdir}/"
-      files = Dir.chdir(tmpdir) { Dir.glob("**/*").select { |f| !File.directory?(f) } }
-      if_files_changed(node, 'plain', files) do
-        rsync_logging = Rake.application.options.silent && '--quiet' || '--verbose'
-        sh "#{rsync} #{rsync_logging} ./ root@#{node}:/srv/chef/"
-      end
+    files = Dir.glob("**/*").select { |f| !File.directory?(f) } - encrypted.keys - encrypted.values
+    if_files_changed(hostname, 'plain', files) do
+      sh *rsync, '--delete', rsync_logging, *rsync_excludes, './', node.rsync_dest
     end
 
-    if_files_changed(node, 'enc', encrypted.keys) do
-      encrypted.each do |encrypted_file, target_file|
-        sh "gpg --quiet --batch --use-agent --decrypt #{encrypted_file} | ssh root@#{node} 'cat > /srv/chef/#{target_file}; chmod 600 /srv/chef/#{target_file}'"
+    if_files_changed(hostname, 'enc', encrypted.keys) do
+      Dir.mktmpdir do |tmpdir|
+        encrypted.each do |encrypted_file, target_file|
+          target = File.join(tmpdir, target_file)
+          mkdir_p(File.dirname(target))
+          sh 'gpg', '--quiet', '--batch', '--use-agent', '--output', target, '--decrypt', encrypted_file
+        end
+        sh *rsync, rsync_logging, tmpdir + '/', node.rsync_dest
       end
     end
   end
 
-  desc "converge #{node}"
-  task "converge:#{node}" => ["bootstrap:#{node}", "upload:#{node}"] do
+  desc "converge #{hostname}"
+  task "converge:#{hostname}" => ["bootstrap:#{hostname}", "upload:#{hostname}"] do
     chef_logging = Rake.application.options.silent && '-l fatal' || ''
-    sh "ssh root@#{node} 'chef-solo -c /srv/chef/config.rb #{chef_logging} -j /srv/chef/.tmp/#{node}.json'"
+    node.run_as_root "chef-solo -c #{node.path}/config.rb #{chef_logging} -j #{node.path}/.tmp/#{hostname}.json"
   end
 
-  desc "run a command on #{node}"
-  task "run:#{node}" => 'run_input' do
-    cmd = ['ssh', "root@#{node}", $cmd]
-    IO.popen(cmd).lines.each do |line|
-      puts "#{node}: #{line}"
-    end
+  desc "run a command on #{hostname}"
+  task "run:#{hostname}" => 'run_input' do
+    node.run($cmd)
   end
 end
 
@@ -139,15 +144,15 @@ task :run_input do
 end
 
 desc "upload to all nodes"
-task :upload => $nodes.map { |node| "upload:#{node}" }
+task :upload => $nodes.map { |node| "upload:#{node.hostname}" }
 
 desc "bootstrap all nodes"
-task :bootstrap => $nodes.map { |node| "bootstrap:#{node}" }
+task :bootstrap => $nodes.map { |node| "bootstrap:#{node.hostname}" }
 
 desc "converge all nodes (default)"
-task "converge" => $nodes.map { |node| "converge:#{node}" }
+task "converge" => $nodes.map { |node| "converge:#{node.hostname}" }
 
 task "run a command on all nodes"
-task :run => $nodes.map { |node| "run:#{node}" }
+task :run => $nodes.map { |node| "run:#{node.hostname}" }
 
 task :default => :converge
