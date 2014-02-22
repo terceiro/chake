@@ -20,6 +20,10 @@ module Chake
         end
       end
 
+      def to_s
+        self.class.name.split("::").last.downcase
+      end
+
   end
 
 end
