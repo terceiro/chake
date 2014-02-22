@@ -1,17 +1,11 @@
 module Chake
 
-  module Backend
+  class Backend
 
-    class Local < Struct.new(:node)
+    class Local < Backend
 
-      def rsync_dest
-        node.path + '/'
-      end
-
-      def run(cmd)
-        IO.popen(['sh', '-c', cmd]).lines.each do |line|
-          puts [node.hostname, line.strip].join(': ')
-        end
+      def command_runner
+        ['sh', '-c']
       end
 
     end

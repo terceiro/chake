@@ -1,18 +1,13 @@
-require 'chake/backend/ssh'
+require 'spec_helper'
 
 describe Chake::Backend::Ssh do
 
+  include_examples "Chake::Backend", Chake::Backend::Ssh, ->() {  }
+
   let(:node) { Chake::Node.new('ssh://myuser@myhost/srv/chef') }
-  let(:backend) { Chake::Backend::Ssh.new(node) }
 
-  it('rsyncs') { expect(backend.rsync_dest).to eq("myuser@myhost:/srv/chef/") }
-  it('runs commands') do
-    io = StringIO.new("line 1\nline 2\n")
-    IO.should_receive(:popen).with(['ssh', 'myuser@myhost', 'something']).and_return(io)
-    backend.should_receive(:puts).with("myhost: line 1").once
-    backend.should_receive(:puts).with("myhost: line 2").once
+  it('runs commands with ssh') { expect(backend.command_runner).to eq(['ssh', 'myuser@myhost']) }
 
-    backend.run('something')
-  end
+  it('rsyncs over ssh') { expect(backend.rsync_dest).to eq('myuser@myhost:/srv/chef/') }
 
 end

@@ -1,17 +1,15 @@
 module Chake
 
-  module Backend
+  class Backend
 
-    class Ssh < Struct.new(:node)
+    class Ssh < Backend
 
       def rsync_dest
         [ssh_target, node.path + '/'].join(':')
       end
 
-      def run(cmd)
-        IO.popen(['ssh', ssh_target, cmd]).lines.each do |line|
-          puts [node.hostname, line.strip].join(": ")
-        end
+      def command_runner
+        ['ssh', ssh_target]
       end
 
       private

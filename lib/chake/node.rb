@@ -1,9 +1,14 @@
 require 'uri'
 require 'etc'
+require 'forwardable'
+
+require 'chake/backend'
 
 module Chake
 
   class Node
+
+    extend Forwardable
 
     attr_reader :hostname
     attr_reader :username
@@ -33,9 +38,9 @@ module Chake
       @backend ||= @backend_class.new(self)
     end
 
+    def_delegators :backend, :run, :rsync_dest
+
   end
 
 end
 
-require 'chake/backend/ssh'
-require 'chake/backend/local'
