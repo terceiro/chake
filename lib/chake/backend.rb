@@ -7,6 +7,7 @@ module Chake
     end
 
     def run(cmd)
+      puts "#{node.hostname}: $ #{cmd}"
       IO.popen(command_runner + [cmd]).lines.each do |line|
         puts [node.hostname, line.strip].join(': ')
       end
