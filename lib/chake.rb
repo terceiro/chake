@@ -93,7 +93,7 @@ $nodes.each do |node|
 
     unless seen_before
       begin
-        node.run_as_root('apt-get -q -y install rsync chef')
+        node.run_as_root('apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -q -y install rsync chef')
       rescue
         rm_f config
         raise
