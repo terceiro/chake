@@ -25,7 +25,6 @@ module Chake
       end
 
       @backend_name = uri.scheme
-      raise ArgumentError.new("Invalid backend #{@backend_name}") unless ['ssh', 'local'].include?(@backend_name)
 
       @hostname = uri.hostname
       @username = uri.user || Etc.getpwuid.name
@@ -34,8 +33,7 @@ module Chake
     end
 
     def backend
-      @backend_class ||= eval('Chake::Backend::' + @backend_name.capitalize)
-      @backend ||= @backend_class.new(self)
+      @backend ||= Chake::Backend.get(@backend_name).new(self)
     end
 
     def_delegators :backend, :run, :run_as_root, :rsync_dest

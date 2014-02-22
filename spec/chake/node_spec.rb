@@ -26,7 +26,7 @@ describe Chake::Node do
   it('accepts backend as URI scheme') { expect(with_backend.backend).to be_an_instance_of(Chake::Backend::Local) }
 
   it('wont accept any backend') do
-    expect { Chake::Node.new('foobar://bazqux') }.to raise_error(ArgumentError)
+    expect { Chake::Node.new('foobar://bazqux').backend }.to raise_error(ArgumentError)
   end
 
   let(:with_data) { Chake::Node.new('local://localhost', 'run_list' => ['recipe[common]']) }
