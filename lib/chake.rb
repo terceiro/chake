@@ -53,7 +53,7 @@ task :nodes do
 end
 
 def encrypted_for(node)
-  Dir.glob("**/files/{default,#{node}}/*.{asc,gpg}").inject({}) do |hash, key|
+  Dir.glob("**/files/{default,host-#{node}}/*.{asc,gpg}").inject({}) do |hash, key|
     hash[key] = key.sub(/\.(asc|gpg)$/, '')
     hash
   end
