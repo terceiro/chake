@@ -8,8 +8,16 @@ module Chake
 
     def run(cmd)
       puts "#{node.hostname}: $ #{cmd}"
-      IO.popen(command_runner + [cmd]).lines.each do |line|
+      output = IO.popen(command_runner + [cmd])
+      output.each_line do |line|
         puts [node.hostname, line.strip].join(': ')
+      end
+      output.close
+      if $?
+        status = $?.exitstatus
+        if status != 0
+          puts [node.hostname, 'FAILED with exit status %d' % status].join(': ')
+        end
       end
     end
 
