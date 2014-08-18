@@ -25,7 +25,7 @@ module Chake
       if node.username == 'root'
         run(cmd)
       else
-        run('sudo ' + cmd)
+        run('sudo sh -c "' + cmd + '"')
       end
     end
 
