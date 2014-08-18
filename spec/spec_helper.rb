@@ -16,7 +16,7 @@ shared_examples "Chake::Backend" do |backend_class|
   end
 
   it('runs as root') do
-    backend.should_receive(:run).with('sudo something')
+    backend.should_receive(:run).with('sudo sh -c "something"')
     backend.run_as_root('something')
   end
 
