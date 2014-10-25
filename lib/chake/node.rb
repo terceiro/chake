@@ -28,7 +28,7 @@ module Chake
 
       @hostname = uri.hostname
       @username = uri.user || Etc.getpwuid.name
-      @path = uri.path || "/tmp/chef.#{username}"
+      @path = uri.path || "/var/tmp/chef.#{username}"
       @data = data
     end
 

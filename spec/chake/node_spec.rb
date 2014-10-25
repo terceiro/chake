@@ -14,8 +14,8 @@ describe Chake::Node do
   it('user current username by default') {
     expect(simple.username).to eq('jonhdoe')
   }
-  it('write to /tmp/chef.$username') {
-    expect(simple.path).to eq('/tmp/chef.jonhdoe')
+  it('writes to /var/tmp/chef.$username') {
+    expect(simple.path).to eq('/var/tmp/chef.jonhdoe')
   }
 
   let(:with_username) { Chake::Node.new('username@hostname') }
