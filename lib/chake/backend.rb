@@ -33,6 +33,10 @@ module Chake
       self.class.backend_name
     end
 
+    def skip?
+      false
+    end
+
     def self.backend_name
       name.split("::").last.downcase
     end

@@ -36,7 +36,7 @@ module Chake
       @backend ||= Chake::Backend.get(@backend_name).new(self)
     end
 
-    def_delegators :backend, :run, :run_as_root, :rsync_dest
+    def_delegators :backend, :run, :run_as_root, :rsync_dest, :skip?
 
   end
 

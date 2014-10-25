@@ -1,3 +1,5 @@
+require 'socket'
+
 module Chake
 
   class Backend
@@ -6,6 +8,10 @@ module Chake
 
       def command_runner
         ['sh', '-c']
+      end
+
+      def skip?
+        node.hostname != Socket.gethostname
       end
 
     end
