@@ -9,7 +9,7 @@ require 'chake/node'
 
 nodes_file = ENV['NODES'] || 'nodes.yaml'
 node_data = File.exists?(nodes_file) && YAML.load_file(nodes_file) || {}
-$nodes = node_data.map { |node,data| Chake::Node.new(node, data) }.reject(&:skip?)
+$nodes = node_data.map { |node,data| Chake::Node.new(node, data) }.reject(&:skip?).uniq(&:hostname)
 
 
 desc "Initializes current directory with sample structure"
