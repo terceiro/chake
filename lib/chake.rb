@@ -94,6 +94,14 @@ def if_files_changed(node, group_name, files)
   end
 end
 
+
+def write_json_file(file, data)
+  File.open(file, 'w') do |f|
+    f.write(JSON.dump(data))
+    f.write("\n")
+  end
+end
+
 platforms = Dir.glob(File.expand_path('chake/bootstrap/*.sh', File.dirname(__FILE__))).sort
 bootstrap_script = '.tmp/bootstrap'
 
@@ -118,10 +126,10 @@ $nodes.each do |node|
     mkdir_p '.tmp', :verbose => false
     config = '.tmp/' + hostname + '.json'
 
-      seen_before = File.exists?(config)
-
-    unless seen_before
-
+    if File.exists?(config)
+      # already bootstrapped, just overwrite
+      write_json_file(config, node.data)
+    else
       # copy bootstrap script over
       scp = node.scp
       target = "/tmp/.chake-bootstrap.#{Etc.getpwuid.name}"
@@ -131,11 +139,7 @@ $nodes.each do |node|
       node.run_as_root(target)
 
       # overwrite config with current contents
-      File.open(config, 'w') do |f|
-        json_data = node.data
-        f.write(JSON.dump(json_data))
-        f.write("\n")
-      end
+      write_json_file(config, node.data)
     end
 
   end
