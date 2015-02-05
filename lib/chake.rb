@@ -122,7 +122,7 @@ $nodes.each do |node|
     encrypted = encrypted_for(hostname)
     rsync_excludes = (encrypted.values + encrypted.keys).map { |f| ["--exclude", f] }.flatten
 
-    rsync = "rsync", "-avp", "--exclude", ".git/"
+    rsync = node.rsync + ["-avp", "--exclude", ".git/"]
     rsync_logging = Rake.application.options.silent && '--quiet' || '--verbose'
 
     files = Dir.glob("**/*").select { |f| !File.directory?(f) } - encrypted.keys - encrypted.values

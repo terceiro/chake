@@ -5,6 +5,18 @@ module Chake
     class CommandFailed < Exception
     end
 
+    def scp
+      ['scp']
+    end
+
+    def scp_dest
+      ''
+    end
+
+    def rsync
+      ['rsync']
+    end
+
     def rsync_dest
       node.path + '/'
     end
