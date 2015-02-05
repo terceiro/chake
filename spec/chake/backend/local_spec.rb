@@ -4,7 +4,7 @@ describe Chake::Backend::Local do
 
   include_examples "Chake::Backend", Chake::Backend::Local
 
-  let(:node) { Chake::Node.new('local://myhost/srv/chef') }
+  let(:node) { Chake::Node.new('local://myusername@myhost/srv/chef') }
 
   it('runs commands with sh -c') { expect(backend.command_runner).to eq(['sh', '-c']) }
 
