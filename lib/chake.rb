@@ -105,19 +105,13 @@ $nodes.each do |node|
 
     seen_before = File.exists?(config)
 
-    # overwrite config with current contents
-    File.open(config, 'w') do |f|
-      json_data = node.data
-      f.write(JSON.dump(json_data))
-      f.write("\n")
-    end
-
     unless seen_before
-      begin
-        node.run_as_root('apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -q -y install rsync chef && update-rc.d chef-client disable && service chef-client stop')
-      rescue
-        rm_f config
-        raise
+      node.run_as_root('apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -q -y install rsync chef && update-rc.d chef-client disable && service chef-client stop')
+      # overwrite config with current contents
+      File.open(config, 'w') do |f|
+        json_data = node.data
+        f.write(JSON.dump(json_data))
+        f.write("\n")
       end
     end
 
