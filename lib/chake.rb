@@ -14,7 +14,9 @@ $nodes = node_data.map { |node,data| Chake::Node.new(node, data) }.reject(&:skip
 
 desc "Initializes current directory with sample structure"
 task :init do
-  if !File.exists?('nodes.yaml')
+  if File.exists?('nodes.yaml')
+    puts '[exists] nodes.yaml'
+  else
     File.open('nodes.yaml', 'w') do |f|
       sample_nodes = <<EOF
 host1.my.tld:
@@ -22,27 +24,46 @@ host1.my.tld:
     - recipe[myhost]
 EOF
       f.write(sample_nodes)
-      puts "→ nodes.yaml"
+      puts "[create] nodes.yaml"
     end
   end
-  if !File.exists?('config.rb')
+  if File.exists?('config.rb')
+    puts '[exists] config.rb'
+  else
     File.open('config.rb', 'w') do |f|
       f.puts "root = File.expand_path(File.dirname(__FILE__))"
       f.puts "file_cache_path   root + '/cache'"
       f.puts "cookbook_path     root + '/cookbooks'"
       f.puts "role_path         root + '/config/roles'"
     end
-    puts "→ config.rb"
+    puts "[create] config.rb"
   end
-  mkdir_p 'config/roles'
-  mkdir_p 'cookbooks/myhost/recipes/'
+
+  if !File.exist?('config/roles')
+    FileUtils.mkdir_p 'config/roles'
+    puts  '[ mkdir] config/roles'
+  end
+  if !File.exist?('cookbooks/myhost/recipes')
+    FileUtils.mkdir_p 'cookbooks/myhost/recipes/'
+    puts  '[ mkdir] cookbooks/myhost/recipes/'
+  end
   recipe = 'cookbooks/myhost/recipes/default.rb'
-  if !File.exists?(recipe)
+  if File.exists?(recipe)
+    puts "[exists] #{recipe}"
+  else
     File.open(recipe, 'w') do |f|
       f.puts "package 'openssh-server'"
     end
-    puts "→ #{recipe}"
+    puts "[create] #{recipe}"
+  end
+  if File.exists?('Rakefile')
+    puts '[exists] Rakefile'
+  else
+    File.open('Rakefile', 'w') do |f|
+      f.puts 'require "chake"'
+      puts '[create] Rakefile'
     end
+  end
 end
 
 desc 'list nodes'
