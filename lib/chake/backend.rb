@@ -2,6 +2,9 @@ module Chake
 
   class Backend < Struct.new(:node)
 
+    class CommandFailed < Exception
+    end
+
     def rsync_dest
       node.path + '/'
     end
@@ -16,7 +19,7 @@ module Chake
       if $?
         status = $?.exitstatus
         if status != 0
-          puts [node.hostname, 'FAILED with exit status %d' % status].join(': ')
+          raise CommandFailed.new([node.hostname, 'FAILED with exit status %d' % status].join(': '))
         end
       end
     end
