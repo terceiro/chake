@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+
+require 'rake'
+
+rakefiles = %w[rakefile Rakefile rakefile.rb Rakefile.rb]
+
+if (!rakefiles.any? { |f| File.exist?(f) }) && !ARGV.include?('-f') && !ARGV.include?('--rakefile')
+  require 'tmpdir'
+  require 'fileutils'
+
+  # syntethize a Rakefile
+  tmpdir = Dir.mktmpdir
+  rakefile = File.join(tmpdir, 'Rakefile')
+  File.open(rakefile, 'w') do |f|
+    f.puts 'require "chake"'
+  end
+  ARGV.unshift << '--rakefile' << rakefile
+
+  # clenup after finishing
+  at_exit do
+    FileUtils.rm_rf tmpdir
+  end
+end
+
+Rake.application.run
