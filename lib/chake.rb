@@ -94,19 +94,42 @@ def if_files_changed(node, group_name, files)
   end
 end
 
+platforms = Dir.glob(File.expand_path('chake/bootstrap/*.sh', File.dirname(__FILE__))).sort
+bootstrap_script = '.tmp/bootstrap'
+
 $nodes.each do |node|
 
   hostname = node.hostname
 
+  file bootstrap_script => platforms do |t|
+    mkdir_p(File.dirname(bootstrap_script))
+    File.open(t.name, 'w') do |f|
+      f.puts '#!/bin/sh'
+      f.puts 'set -eu'
+      platforms.each do |platform|
+        f.puts(File.read(platform))
+      end
+    end
+    chmod 0755, t.name
+  end
+
   desc "bootstrap #{hostname}"
-  task "bootstrap:#{hostname}" do
+  task "bootstrap:#{hostname}" => bootstrap_script do
     mkdir_p '.tmp', :verbose => false
     config = '.tmp/' + hostname + '.json'
 
-    seen_before = File.exists?(config)
+      seen_before = File.exists?(config)
 
     unless seen_before
-      node.run_as_root('apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -q -y install rsync chef && update-rc.d chef-client disable && service chef-client stop')
+
+      # copy bootstrap script over
+      scp = node.scp
+      target = "/tmp/.chake-bootstrap.#{Etc.getpwuid.name}"
+      sh *scp, bootstrap_script, node.scp_dest + target
+
+      # run bootstrap script
+      node.run_as_root(target)
+
       # overwrite config with current contents
       File.open(config, 'w') do |f|
         json_data = node.data
