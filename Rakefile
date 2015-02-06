@@ -74,6 +74,12 @@ task :obs => 'build:all' do
 
 end
 
+desc 'lists changes since last release'
+task :changelog do
+  last_tag = `git tag | sort -V`.split.last
+  sh 'git', 'shortlog', last_tag + '..'
+end
+
 task :release => [:test, :obs]
 
 task :default => :test
