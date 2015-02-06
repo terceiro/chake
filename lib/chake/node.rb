@@ -26,7 +26,7 @@ module Chake
 
       @backend_name = uri.scheme
 
-      @hostname = uri.hostname
+      @hostname = uri.host
       @username = uri.user || Etc.getpwuid.name
       @path = uri.path || "/var/tmp/chef.#{username}"
       @data = data
