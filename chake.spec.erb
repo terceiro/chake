@@ -14,7 +14,7 @@ Prefix: %{_prefix}
 Vendor: <%= pkg.authors.first %> <<%= pkg.email.first %>>
 Url: <%= pkg.homepage %>
 BuildArch: noarch
-BuildRequires: ruby, rubygem-rake
+BuildRequires: ruby, rubygem-rake, rubygem-bundler
 Requires: ruby, rubygem-rake
 
 %define gemdir <%= Gem.dir %>
