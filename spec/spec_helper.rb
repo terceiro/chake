@@ -1,6 +1,11 @@
 require 'chake/node'
 require 'chake/backend'
 
+require 'rspec/version'
+if RSpec::Version::STRING < '2.14'
+  puts "Skipping tests, need RSpec >= 2.14"
+  exit
+end
 
 shared_examples "Chake::Backend" do |backend_class|
 
