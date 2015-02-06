@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Chake::Backend::Ssh do
 
-  include_examples "Chake::Backend", Chake::Backend::Ssh, ->() {  }
+  include_examples "Chake::Backend", Chake::Backend::Ssh
 
   let(:node) { Chake::Node.new('ssh://myuser@myhost/srv/chef') }
 
