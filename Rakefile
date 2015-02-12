@@ -83,7 +83,7 @@ end
 desc 'checks if the latest release is properly documented in ChangeLog.md'
 task :check_changelog do
   begin
-    sh 'grep' '^#\s*' + pkg.version.to_s, 'ChangeLog.md'
+    sh 'grep', '^#\s*' + pkg.version.to_s, 'ChangeLog.md'
   rescue
     puts "Version #{pkg.version} not documented in ChangeLog.md!"
     raise
