@@ -114,11 +114,11 @@ $nodes.each do |node|
     File.open(t.name, 'w') do |f|
       f.puts '#!/bin/sh'
       f.puts 'set -eu'
+      f.puts "echo '#{hostname}' > /etc/hostname"
+      f.puts 'hostname --file /etc/hostname'
       platforms.each do |platform|
         f.puts(File.read(platform))
       end
-      f.puts "echo '#{hostname}' > /etc/hostname"
-      f.puts 'hostname --file /etc/hostname'
     end
     chmod 0755, t.name
   end
