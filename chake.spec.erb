@@ -31,6 +31,7 @@ Requires: ruby, rubygem-rake
 %install
 %{__rm} -rf %{buildroot}
 mkdir -p %{gembuilddir}
+sed -e 's#spec.files\s*=.*#spec.files = Dir.glob('**/*')#' %{name}.gemspec
 rake build
 gem install --local --install-dir %{gembuilddir} --force pkg/*.gem
 mkdir -p %{buildroot}/%{_bindir}
@@ -41,6 +42,6 @@ rmdir %{gembuilddir}/bin
 rm -rf $RPM_BUILD_ROOT
 
 %files
-/usr/lib/chake
+%{gemdir}
 %{_bindir}/*
 
