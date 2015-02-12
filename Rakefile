@@ -26,7 +26,7 @@ end
 desc 'Create source RPM package'
 task 'build:rpmsrc' => [:build, 'pkg/chake.spec']
 
-file 'pkg/chake.spec' => 'chake.spec.erb' do |t|
+file 'pkg/chake.spec' => ['chake.spec.erb', 'lib/chake/version.rb'] do |t|
   require 'erb'
   pkg = Gem::Specification.load('chake.gemspec')
   template =  ERB.new(File.read('chake.spec.erb'))
