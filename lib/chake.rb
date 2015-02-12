@@ -103,11 +103,11 @@ def write_json_file(file, data)
 end
 
 platforms = Dir.glob(File.expand_path('chake/bootstrap/*.sh', File.dirname(__FILE__))).sort
-bootstrap_script = '.tmp/bootstrap'
 
 $nodes.each do |node|
 
   hostname = node.hostname
+  bootstrap_script = '.tmp/bootstrap-' + hostname
 
   file bootstrap_script => platforms do |t|
     mkdir_p(File.dirname(bootstrap_script))
@@ -117,6 +117,8 @@ $nodes.each do |node|
       platforms.each do |platform|
         f.puts(File.read(platform))
       end
+      f.puts "echo '#{hostname}' > /etc/hostname"
+      f.puts 'hostname --file /etc/hostname'
     end
     chmod 0755, t.name
   end
