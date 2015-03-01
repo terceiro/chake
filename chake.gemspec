@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["terceiro@softwarelivre.org"]
   spec.summary       = %q{Simple host management with chef and rake. No chef server required.}
   spec.description   = %q{chake provides a set of rake tasks that you can use to manage any number of hosts via SSH. It doesn't require a chef server; all you need is a workstation from where you can SSH into all your hosts.}
-  spec.homepage      = "https://github.com/terceiro/chake"
+  spec.homepage      = "https://gitlab.com/terceiro/chake"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
