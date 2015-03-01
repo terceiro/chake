@@ -21,7 +21,7 @@ task :init do
       sample_nodes = <<EOF
 host1.my.tld:
   run_list:
-    - recipe[myhost]
+    - recipe[basics]
 EOF
       f.write(sample_nodes)
       puts "[create] nodes.yaml"
@@ -43,11 +43,11 @@ EOF
     FileUtils.mkdir_p 'config/roles'
     puts  '[ mkdir] config/roles'
   end
-  if !File.exist?('cookbooks/myhost/recipes')
-    FileUtils.mkdir_p 'cookbooks/myhost/recipes/'
-    puts  '[ mkdir] cookbooks/myhost/recipes/'
+  if !File.exist?('cookbooks/basics/recipes')
+    FileUtils.mkdir_p 'cookbooks/basics/recipes/'
+    puts  '[ mkdir] cookbooks/basics/recipes/'
   end
-  recipe = 'cookbooks/myhost/recipes/default.rb'
+  recipe = 'cookbooks/basics/recipes/default.rb'
   if File.exists?(recipe)
     puts "[exists] #{recipe}"
   else

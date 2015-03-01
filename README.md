@@ -27,15 +27,15 @@ nodes.yaml
 config/
 config/roles/
 cookbooks/
-cookbooks/myhost/
-cookbooks/myhost/recipes/
-cookbooks/myhost/recipes/default.rb
+cookbooks/basics/
+cookbooks/basics/recipes/
+cookbooks/basics/recipes/default.rb
 
 ```
 
 * `nodes.yaml`, where you will list the hosts you will be managing.
 * a `cookbooks` directory where you will store your cookbooks. A sample
-  cookbook called "myhost" is created, but feel free to remove it and add
+  cookbook called "basics" is created, but feel free to remove it and add
   actual cookbooks.
 
 
