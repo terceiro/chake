@@ -8,14 +8,6 @@ Simple host management with chef and rake. No chef server required.
 
 ## Creating the repository
 
-Require chake on your `Rakefile`:
-
-```ruby
-require 'chake'
-```
-
-Initializing the repository:
-
 ```
 $ chake init
 [create] nodes.yaml
@@ -28,8 +20,8 @@ $ chake init
 
 A brief explanation of the created files:
 
-| File | Description |
-|-----+-------|
+|File|Description|
+|----|-----------|
 | `nodes.yaml`  | where you will list the hosts you will be managing, and what recipes to apply to each of them. |
 | `config.rb` | contains the chef-solo configuration. You can modify it, but usually you won't need to. |
 | `config/roles` | directory is where you can put your role definitions. |
