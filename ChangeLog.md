@@ -1,3 +1,7 @@
+# 0.3.3
+
+* rsync: exclude cache/ to work with the version of rsync in OSX
+
 # 0.3.2
 
 * Now finally, hopefully, really fix RPM builds
