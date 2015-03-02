@@ -19,7 +19,7 @@ task :init do
   else
     File.open('nodes.yaml', 'w') do |f|
       sample_nodes = <<EOF
-host1.my.tld:
+host1.mycompany.com:
   run_list:
     - recipe[basics]
 EOF
