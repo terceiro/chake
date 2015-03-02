@@ -6,17 +6,17 @@ end
 
 pkg = Gem::Specification.load('chake.gemspec')
 
-task :build do
+task 'build:tarball' => [:build] do
   chdir 'pkg' do
     sh 'gem2tgz', "#{pkg.name}-#{pkg.version}.gem"
   end
 end
 
 desc 'Create Debian source package'
-task 'build:debsrc' => [:build] do
+task 'build:debsrc' => ['build:tarball'] do
   dirname = "#{pkg.name}-#{pkg.version}"
   chdir 'pkg' do
-    sh 'gem2deb', '--no-wnpp-check', '-s', '-p', pkg.name, "#{dirname}.gem"
+    sh 'gem2deb', '--no-wnpp-check', '-s', '-p', pkg.name, "#{dirname}.tar.gz"
     chdir dirname do
       sh 'dpkg-buildpackage', '-S', '-us', '-uc'
     end
@@ -24,7 +24,7 @@ task 'build:debsrc' => [:build] do
 end
 
 desc 'Create source RPM package'
-task 'build:rpmsrc' => [:build, 'pkg/chake.spec']
+task 'build:rpmsrc' => ['build:tarball', 'pkg/chake.spec']
 
 file 'pkg/chake.spec' => ['chake.spec.erb', 'lib/chake/version.rb'] do |t|
   require 'erb'
