@@ -15,6 +15,13 @@ module Chake
     attr_reader :path
     attr_reader :data
 
+    def self.max_node_name_length
+      @max_node_name_length ||= 0
+    end
+    def self.max_node_name_length=(value)
+      @max_node_name_length = value
+    end
+
     def initialize(hostname, data = {})
       uri = URI.parse(hostname)
       if !uri.scheme && !uri.host && uri.path
@@ -30,6 +37,10 @@ module Chake
       @username = uri.user || Etc.getpwuid.name
       @path = uri.path || "/var/tmp/chef.#{username}"
       @data = data
+
+      if @hostname.length > self.class.max_node_name_length
+        self.class.max_node_name_length = @hostname.length
+      end
     end
 
     def backend
