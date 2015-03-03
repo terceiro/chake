@@ -23,6 +23,14 @@ task 'build:debsrc' => ['build:tarball'] do
   end
 end
 
+desc 'Builds and installs Debian package'
+task 'deb:install' => 'build:debsrc'do
+  chdir "pkg/#{pkg.name}-#{pkg.version}" do
+    sh 'fakeroot debian/rules binary'
+    sh 'sudo debi'
+  end
+end
+
 desc 'Create source RPM package'
 task 'build:rpmsrc' => ['build:tarball', 'pkg/chake.spec']
 
