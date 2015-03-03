@@ -10,7 +10,8 @@ require 'chake/node'
 nodes_file = ENV['NODES'] || 'nodes.yaml'
 node_data = File.exists?(nodes_file) && YAML.load_file(nodes_file) || {}
 $nodes = node_data.map { |node,data| Chake::Node.new(node, data) }.reject(&:skip?).uniq(&:hostname)
-
+$chake_tmpdir = 'tmp/chake'
+FileUtils.mkdir_p($chake_tmpdir)
 
 desc "Initializes current directory with sample structure"
 task :init do
@@ -85,7 +86,7 @@ def if_files_changed(node, group_name, files)
     return
   end
   hash = IO.popen(['sha1sum', *files]).read
-  hash_file = File.join('.tmp', node + '.' + group_name + '.sha1sum')
+  hash_file = File.join($chake_tmpdir, node + '.' + group_name + '.sha1sum')
   if !File.exists?(hash_file) || File.read(hash_file) != hash
     yield
   end
@@ -107,7 +108,7 @@ platforms = Dir.glob(File.expand_path('chake/bootstrap/*.sh', File.dirname(__FIL
 $nodes.each do |node|
 
   hostname = node.hostname
-  bootstrap_script = '.tmp/bootstrap-' + hostname
+  bootstrap_script = File.join($chake_tmpdir, 'bootstrap-' + hostname)
 
   file bootstrap_script => platforms do |t|
     mkdir_p(File.dirname(bootstrap_script))
@@ -125,8 +126,7 @@ $nodes.each do |node|
 
   desc "bootstrap #{hostname}"
   task "bootstrap:#{hostname}" => bootstrap_script do
-    mkdir_p '.tmp', :verbose => false
-    config = '.tmp/' + hostname + '.json'
+    config = File.join($chake_tmpdir, hostname + '.json')
 
     if File.exists?(config)
       # already bootstrapped, just overwrite
@@ -174,7 +174,7 @@ $nodes.each do |node|
   desc "converge #{hostname}"
   task "converge:#{hostname}" => ["bootstrap:#{hostname}", "upload:#{hostname}"] do
     chef_logging = Rake.application.options.silent && '-l fatal' || ''
-    node.run_as_root "chef-solo -c #{node.path}/config.rb #{chef_logging} -j #{node.path}/.tmp/#{hostname}.json"
+    node.run_as_root "chef-solo -c #{node.path}/config.rb #{chef_logging} -j #{node.path}/#{$chake_tmpdir}/#{hostname}.json"
   end
 
   desc "run a command on #{hostname}"
