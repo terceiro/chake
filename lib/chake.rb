@@ -98,7 +98,7 @@ end
 
 def write_json_file(file, data)
   File.open(file, 'w') do |f|
-    f.write(JSON.dump(data))
+    f.write(JSON.pretty_generate(data))
     f.write("\n")
   end
 end
