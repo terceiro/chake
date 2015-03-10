@@ -4,8 +4,8 @@ describe Chake::Node do
 
   before do
     ent = double
-    ent.stub(:name).and_return('jonhdoe')
-    Etc.stub(:getpwuid).and_return(ent)
+    allow(ent).to receive(:name).and_return('jonhdoe')
+    allow(Etc).to receive(:getpwuid).and_return(ent)
   end
 
   let(:simple) { Chake::Node.new('hostname') }
@@ -40,9 +40,9 @@ describe Chake::Node do
 
       backend = double
       args = Object.new
-      node.stub(:backend).and_return(backend)
+      allow(node).to receive(:backend).and_return(backend)
 
-      backend.should_receive(method).with(args)
+      expect(backend).to receive(method).with(args)
       node.send(method, args)
     end
   end
