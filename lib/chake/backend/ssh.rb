@@ -39,7 +39,7 @@ module Chake
       end
 
       def ssh_target
-        [node.username, node.hostname].compact.join('@')
+        [node.remote_username, node.hostname].compact.join('@')
       end
 
     end

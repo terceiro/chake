@@ -37,7 +37,7 @@ module Chake
     end
 
     def run_as_root(cmd)
-      if node.username == 'root'
+      if node.remote_username == 'root'
         run(cmd)
       else
         run('sudo sh -c "' + cmd + '"')

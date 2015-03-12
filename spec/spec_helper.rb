@@ -26,7 +26,7 @@ shared_examples "Chake::Backend" do |backend_class|
   end
 
   it('does not use sudo if already root') do
-    allow(backend.node).to receive(:username).and_return('root')
+    allow(backend.node).to receive(:remote_username).and_return('root')
     expect(backend).to receive(:run).with('something')
     backend.run_as_root('something')
   end

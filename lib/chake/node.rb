@@ -12,6 +12,7 @@ module Chake
 
     attr_reader :hostname
     attr_reader :username
+    attr_reader :remote_username
     attr_reader :path
     attr_reader :data
 
@@ -35,6 +36,7 @@ module Chake
 
       @hostname = uri.host
       @username = uri.user || Etc.getpwuid.name
+      @remote_username = uri.user
       @path = uri.path || "/var/tmp/chef.#{username}"
       @data = data
 
