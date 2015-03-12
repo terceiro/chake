@@ -27,8 +27,8 @@ desc 'Builds and installs Debian package'
 task 'deb:install' => 'build:debsrc'do
   chdir "pkg/#{pkg.name}-#{pkg.version}" do
     sh 'fakeroot debian/rules binary'
-    sh 'sudo', 'dpkg', '-i', "#{pkg.name}_#{pkg.version}-1_all.deb"
   end
+  sh 'sudo', 'dpkg', '-i', "pkg/#{pkg.name}_#{pkg.version}-1_all.deb"
 end
 
 desc 'Create source RPM package'
