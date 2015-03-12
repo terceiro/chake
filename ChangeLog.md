@@ -1,3 +1,11 @@
+# 0.4.1
+
+* Don't always assume the local username as the remote username for SSH
+  connections:
+  * `user@host`: connect with `user@host`
+  * `host`: connect with `host` (username will be obtained by SSH itself from
+    either its configuration files or the current username)
+
 # 0.4.0
 
 * Redesign build of RPM package
