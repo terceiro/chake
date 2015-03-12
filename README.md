@@ -150,8 +150,9 @@ of the configuration.
 ### repository-local SSH configuration
 
 If you need special SSH configuration parameters, you can create a file called
-`.ssh_config` in at the root of your repository, and chake will use it when
-calling `ssh`.
+`.ssh_config` (or whatever name you have in the `$CHAKE_SSH_CONFIG` environment
+variable, see below for details) in at the root of your repository, and chake
+will use it when calling `ssh`.
 
 ### Converging local host
 
@@ -181,6 +182,13 @@ local://laptop:
 
 When you run `rake converge` on `desktop`, `laptop` will be skipped, and
 vice-versa.
+
+### Environment variables
+
+|Variable|Meaning|Default value|
+|--------|-------|-------------|
+| `$CHAKE_SSH_CONFIG` | local SSH configuration file | `.ssh_config` |
+| `$CHAKE_RSYNC_OPTIONS` | extra options to pass to `rsync`. Useful to e.g. exclude large files from being upload to each server | _none_ |
 
 ## Contributing
 
