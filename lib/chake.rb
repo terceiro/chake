@@ -150,8 +150,10 @@ $nodes.each do |node|
   task "upload:#{hostname}" do
     encrypted = encrypted_for(hostname)
     rsync_excludes = (encrypted.values + encrypted.keys).map { |f| ["--exclude", f] }.flatten
+    rsync_excludes << "--exclude" << ".git/"
+    rsync_excludes << "--exclude" << "cache/"
 
-    rsync = node.rsync + ["-avp", "--exclude", ".git/", "--exclude", "cache/"]
+    rsync = node.rsync + ["-avp"] + ENV.fetch('CHAKE_RSYNC_OPTIONS', '').split
     rsync_logging = Rake.application.options.silent && '--quiet' || '--verbose'
 
     files = Dir.glob("**/*").select { |f| !File.directory?(f) } - encrypted.keys - encrypted.values
