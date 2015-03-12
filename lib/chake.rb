@@ -5,6 +5,7 @@ require 'json'
 require 'tmpdir'
 require 'readline'
 
+require 'chake/version'
 require 'chake/node'
 
 nodes_file = ENV['NODES'] || 'nodes.yaml'
