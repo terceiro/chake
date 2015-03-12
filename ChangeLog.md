@@ -1,3 +1,18 @@
+# 0.4.0
+
+* Redesign build of RPM package
+* Output of command run on nodes is now aligned
+* Change storage of temporary files from .tmp to tmp/chake
+* The JSON node attributes files generated in tmp/chake are not readable
+* SSH config file can now be controlled with the `$CHAKE_SSH_CONFIG`
+  environment variable
+* Extra options for rsync can now be passed in the `$CHAKE_RSYNC_OPTIONS`
+  environment variable
+* Chake::VERSION is now available in Rakefiles
+* update test suite to use new rspec syntax instead the old one which is
+  obsolete in rspec 3.
+  * Thanks to Athos Ribeiro.
+
 # 0.3.3
 
 * rsync: exclude cache/ to work with the version of rsync in OSX
