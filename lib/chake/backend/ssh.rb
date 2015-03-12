@@ -27,11 +27,15 @@ module Chake
       private
 
       def rsync_ssh
-        File.exist?('.ssh_config') && ['-e', 'ssh -F .ssh_config'] || []
+        File.exist?(ssh_config_file) && ['-e', 'ssh -F ' + ssh_config_file ] || []
       end
 
       def ssh_config
-        File.exist?('.ssh_config') && ['-F' '.ssh_config'] || []
+        File.exist?(ssh_config_file) && ['-F', ssh_config_file] || []
+      end
+
+      def ssh_config_file
+        @ssh_config_file ||= ENV.fetch('CHAKE_SSH_CONFIG', '.ssh_config')
       end
 
       def ssh_target
