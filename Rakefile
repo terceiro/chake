@@ -88,6 +88,13 @@ task :changelog do
   sh 'git', 'shortlog', last_tag + '..'
 end
 
+task :check_tag do
+  last_tag = `git tag | sort -V`.split.last
+  if last_tag == "v#{pkg.version}"
+    fail "Version #{pkg.version} was already released!"
+  end
+end
+
 desc 'checks if the latest release is properly documented in ChangeLog.md'
 task :check_changelog do
   begin
@@ -98,6 +105,6 @@ task :check_changelog do
   end
 end
 
-task :release => [:check_changelog, :test, :obs]
+task :release => [:check_tag, :check_changelog, :test, :obs]
 
 task :default => :test
