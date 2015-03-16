@@ -1,3 +1,8 @@
+# 0.4.2
+
+* tmp/chake: create only when actually needed
+* Control nodes files with `$CHAKE_NODES`
+
 # 0.4.1
 
 * Don't always assume the local username as the remote username for SSH
