@@ -12,7 +12,6 @@ nodes_file = ENV['NODES'] || 'nodes.yaml'
 node_data = File.exists?(nodes_file) && YAML.load_file(nodes_file) || {}
 $nodes = node_data.map { |node,data| Chake::Node.new(node, data) }.reject(&:skip?).uniq(&:hostname)
 $chake_tmpdir = 'tmp/chake'
-FileUtils.mkdir_p($chake_tmpdir)
 
 desc "Initializes current directory with sample structure"
 task :init do
@@ -91,6 +90,7 @@ def if_files_changed(node, group_name, files)
   if !File.exists?(hash_file) || File.read(hash_file) != hash
     yield
   end
+  FileUtils.mkdir_p(File.dirname(hash_file))
   File.open(hash_file, 'w') do |f|
     f.write(hash)
   end
@@ -142,6 +142,7 @@ $nodes.each do |node|
       node.run_as_root(target)
 
       # overwrite config with current contents
+      mkdir_p File.dirname(config)
       write_json_file(config, node.data)
     end
 
