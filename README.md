@@ -189,6 +189,7 @@ vice-versa.
 |--------|-------|-------------|
 | `$CHAKE_SSH_CONFIG` | local SSH configuration file | `.ssh_config` |
 | `$CHAKE_RSYNC_OPTIONS` | extra options to pass to `rsync`. Useful to e.g. exclude large files from being upload to each server | _none_ |
+| `$CHAKE_NODES` | File containing the list of servers to be managed | _nodes.yaml` |
 
 ## Contributing
 

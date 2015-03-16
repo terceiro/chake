@@ -8,7 +8,7 @@ require 'readline'
 require 'chake/version'
 require 'chake/node'
 
-nodes_file = ENV['NODES'] || 'nodes.yaml'
+nodes_file = ENV['CHAKE_NODES'] || 'nodes.yaml'
 node_data = File.exists?(nodes_file) && YAML.load_file(nodes_file) || {}
 $nodes = node_data.map { |node,data| Chake::Node.new(node, data) }.reject(&:skip?).uniq(&:hostname)
 $chake_tmpdir = 'tmp/chake'
