@@ -1,3 +1,9 @@
+# 0.4.3
+
+* When running remote commands as root, run `sudo COMMAND` directly instead of
+  `sudo sh -c "COMMAND"`. Under over-restrictive sudo setups (i.e. one in which
+  you cannot run a shell as root), `sudo sh -c "FOO"` will not be allowed.
+
 # 0.4.2
 
 * tmp/chake: create only when actually needed
