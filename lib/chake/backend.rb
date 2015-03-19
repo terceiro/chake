@@ -40,7 +40,7 @@ module Chake
       if node.remote_username == 'root'
         run(cmd)
       else
-        run('sudo sh -c "' + cmd + '"')
+        run('sudo ' + cmd)
       end
     end
 
