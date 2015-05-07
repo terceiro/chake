@@ -36,6 +36,10 @@ module Chake
       end
     end
 
+    def run_shell
+      system(*shell_command)
+    end
+
     def run_as_root(cmd)
       if node.remote_username == 'root'
         run(cmd)

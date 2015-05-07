@@ -24,6 +24,10 @@ module Chake
         ['ssh', ssh_config, ssh_target].flatten.compact
       end
 
+      def shell_command
+        command_runner
+      end
+
       private
 
       def rsync_ssh

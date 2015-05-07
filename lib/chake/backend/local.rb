@@ -10,6 +10,10 @@ module Chake
         ['sh', '-c']
       end
 
+      def shell_command
+        ENV.fetch('SHELL', Etc.getpwuid.shell)
+      end
+
       def skip?
         node.hostname != Socket.gethostname
       end

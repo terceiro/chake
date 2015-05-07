@@ -185,6 +185,11 @@ $nodes.each do |node|
   task "run:#{hostname}" => 'run_input' do
     node.run($cmd)
   end
+
+  desc "Runs a shell on #{hostname}"
+  task "shell:#{hostname}" do
+    node.run_shell
+  end
 end
 
 task :run_input do
