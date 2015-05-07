@@ -150,9 +150,15 @@ of the configuration.
 ### repository-local SSH configuration
 
 If you need special SSH configuration parameters, you can create a file called
-`.ssh_config` (or whatever name you have in the `$CHAKE_SSH_CONFIG` environment
-variable, see below for details) in at the root of your repository, and chake
-will use it when calling `ssh`.
+`.ssh_config` (or whatever file name you have in the `$CHAKE_SSH_CONFIG`
+environment variable, see below for details) in at the root of your repository,
+and chake will use it when calling `ssh`.
+
+### Logging in to a host
+
+To easily login to one of your host, just run `rake login:$HOSTNAME`. This will
+automatically use the repository-local SSH configuration as above so you don't
+have to type `-F .ssh_config` all the time.
 
 ### Converging local host
 

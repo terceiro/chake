@@ -1,3 +1,8 @@
+# 0.5
+
+* Add a task login:$host that you can use to easily log in to any of your
+  hosts.
+
 # 0.4.3
 
 * When running remote commands as root, run `sudo COMMAND` directly instead of
