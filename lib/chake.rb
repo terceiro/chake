@@ -186,8 +186,8 @@ $nodes.each do |node|
     node.run($cmd)
   end
 
-  desc "Runs a shell on #{hostname}"
-  task "shell:#{hostname}" do
+  desc "Logs in to a shell on #{hostname}"
+  task "login:#{hostname}" do
     node.run_shell
   end
 end
