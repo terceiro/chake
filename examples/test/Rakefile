@@ -1,7 +1,19 @@
 $:.unshift '../../lib' # this shouldn't be needed when you have chake installed
 require 'chake'
 
+manifest = %w[
+  Rakefile
+  cookbooks
+  cookbooks/example
+  cookbooks/example/recipes
+  cookbooks/example/recipes/default.rb
+  cookbooks/example/files
+  cookbooks/example/files/host-homer
+  cookbooks/example/files/host-homer/test.asc
+  config.rb
+]
+
 desc 'removes everything'
 task :clean do
-  rm_rf Dir.glob('*') - ['Rakefile']
+  rm_rf Dir.glob('*') - manifest
 end
