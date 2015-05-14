@@ -13,7 +13,7 @@ module Chake
       end
 
       def rsync
-        ['rsync', rsync_ssh].flatten.compact
+        [ssh_prefix, 'rsync', rsync_ssh].flatten.compact
       end
 
       def rsync_dest
@@ -21,7 +21,7 @@ module Chake
       end
 
       def command_runner
-        ['ssh', ssh_config, ssh_target].flatten.compact
+        [ssh_prefix, 'ssh', ssh_config, ssh_target].flatten.compact
       end
 
       def shell_command
@@ -40,6 +40,10 @@ module Chake
 
       def ssh_config_file
         @ssh_config_file ||= ENV.fetch('CHAKE_SSH_CONFIG', '.ssh_config')
+      end
+
+      def ssh_prefix
+        @ssh_prefix ||= ENV.fetch('CHAKE_SSH_PREFIX', '').split
       end
 
       def ssh_target

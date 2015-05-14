@@ -160,6 +160,19 @@ To easily login to one of your host, just run `rake login:$HOSTNAME`. This will
 automatically use the repository-local SSH configuration as above so you don't
 have to type `-F .ssh_config` all the time.
 
+### Running all SSH invocations with some prefix command
+
+Some times, you will also want or need to prefix your SSH invocations with some
+prefix command in order to e.g. tunnel it through some central exit node. You
+can do this by setting `$CHAKE_SSH_PREFIX` on your environment. Example:
+
+```
+CHAKE_SSH_PREFIX=tsocks rake converge
+```
+
+The above will make all SSH invocations to all hosts be called as `tsocks ssh
+[...]`
+
 ### Converging local host
 
 If you want to manage your local workstation with chake, you can declare a local node like this in `nodes.yaml`:
@@ -194,6 +207,7 @@ vice-versa.
 |Variable|Meaning|Default value|
 |--------|-------|-------------|
 | `$CHAKE_SSH_CONFIG` | local SSH configuration file | `.ssh_config` |
+| `$CHAKE_SSH_PREFIX` | Command to prefix SSH (and rsync over SSH) calls with | _none_ |
 | `$CHAKE_RSYNC_OPTIONS` | extra options to pass to `rsync`. Useful to e.g. exclude large files from being upload to each server | _none_ |
 | `$CHAKE_NODES` | File containing the list of servers to be managed | _nodes.yaml` |
 
