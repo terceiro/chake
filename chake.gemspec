@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = Chake::VERSION
   spec.authors       = ["Antonio Terceiro"]
   spec.email         = ["terceiro@softwarelivre.org"]
-  spec.summary       = %q{Simple host management with chef and rake. No chef server required.}
-  spec.description   = %q{chake provides a set of rake tasks that you can use to manage any number of hosts via SSH. It doesn't require a chef server; all you need is a workstation from where you can SSH into all your hosts.}
+  spec.summary       = %q{serverless configuration management tool for chef}
+  spec.description   = %q{chake supports managing a number of hosts with chef, via SSH. It doesn't require a chef server; all you need is a workstation from where you can SSH into all your hosts.}
   spec.homepage      = "https://gitlab.com/terceiro/chake"
   spec.license       = "MIT"
 
