@@ -1,3 +1,9 @@
+# 0.6
+
+* Support a ssh prefix command by setting `$CHAKE_SSH_PREFIX` in the
+  environment. For example, `CHAKE_SSH_PREFIX=tsocks` will make all ssh
+  invocations as `tocks ssh ...` instead of just `ssh ...`.
+
 # 0.5
 
 * Add a task login:$host that you can use to easily log in to any of your
