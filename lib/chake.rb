@@ -105,21 +105,19 @@ def write_json_file(file, data)
   end
 end
 
-platforms = Dir.glob(File.expand_path('chake/bootstrap/*.sh', File.dirname(__FILE__))).sort
+bootstrap_steps = Dir.glob(File.expand_path('chake/bootstrap/*.sh', File.dirname(__FILE__))).sort
 
 $nodes.each do |node|
 
   hostname = node.hostname
   bootstrap_script = File.join($chake_tmpdir, 'bootstrap-' + hostname)
 
-  file bootstrap_script => platforms do |t|
+  file bootstrap_script => bootstrap_steps do |t|
     mkdir_p(File.dirname(bootstrap_script))
     File.open(t.name, 'w') do |f|
       f.puts '#!/bin/sh'
       f.puts 'set -eu'
-      f.puts "echo '#{hostname}' > /etc/hostname"
-      f.puts 'hostname --file /etc/hostname'
-      platforms.each do |platform|
+      bootstrap_steps.each do |platform|
         f.puts(File.read(platform))
       end
     end
@@ -140,7 +138,7 @@ $nodes.each do |node|
       sh *scp, bootstrap_script, node.scp_dest + target
 
       # run bootstrap script
-      node.run_as_root(target)
+      node.run_as_root("#{target} #{hostname}")
 
       # overwrite config with current contents
       mkdir_p File.dirname(config)
