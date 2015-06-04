@@ -1,3 +1,11 @@
+# 0.7
+
+* gemspec: improve summary and description
+* Also for encrypted files under $cookbook/files/, and not only under
+  $cookbook/files/\*/.
+* Allow overriding tmpdir with `$CHAKE_TMPDIR`
+* Stop cloud-init from resetting the hostname
+
 # 0.6
 
 * Support a ssh prefix command by setting `$CHAKE_SSH_PREFIX` in the
