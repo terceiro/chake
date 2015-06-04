@@ -209,7 +209,8 @@ vice-versa.
 | `$CHAKE_SSH_CONFIG` | local SSH configuration file | `.ssh_config` |
 | `$CHAKE_SSH_PREFIX` | Command to prefix SSH (and rsync over SSH) calls with | _none_ |
 | `$CHAKE_RSYNC_OPTIONS` | extra options to pass to `rsync`. Useful to e.g. exclude large files from being upload to each server | _none_ |
-| `$CHAKE_NODES` | File containing the list of servers to be managed | _nodes.yaml` |
+| `$CHAKE_NODES` | File containing the list of servers to be managed | `nodes.yaml` |
+| `$CHAKE_TMPDIR` | Directory used to store temporary cache files | `tmp/chake` |
 
 ## Contributing
 
