@@ -192,6 +192,7 @@ $nodes.each do |node|
 end
 
 task :run_input do
+  puts "# Enter command to run on all servers:"
   $cmd = ENV['CMD'] || Readline.readline('$ ')
 end
 
