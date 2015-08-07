@@ -8,7 +8,7 @@ end
 
 pkg = Gem::Specification.load('chake.gemspec')
 
-task 'build:tarball' => [:build] do
+task 'build:tarball' => 'bundler:build' do
   chdir 'pkg' do
     sh 'gem2tgz', "#{pkg.name}-#{pkg.version}.gem"
   end
