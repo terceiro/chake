@@ -1,4 +1,6 @@
-require "bundler/gem_tasks"
+namespace :bundler do
+  require "bundler/gem_tasks"
+end
 
 task :test do
   sh 'rspec', '--color'
@@ -105,6 +107,6 @@ task :check_changelog do
   end
 end
 
-task :release => [:check_tag, :check_changelog, :test, :obs]
+task :release => [:check_tag, :check_changelog, :test, 'bundler:release', :obs]
 
 task :default => :test
