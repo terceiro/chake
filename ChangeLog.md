@@ -1,3 +1,11 @@
+# 0.8
+
+* gemspec: minor improvements in the long description
+* LICENSE.txt: fixed license name
+* run: print small message before prompting
+* Add history support for the `run` tasks
+* Abort `run` tasks if no command is provided
+
 # 0.7
 
 * gemspec: improve summary and description
