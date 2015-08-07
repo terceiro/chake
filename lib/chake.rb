@@ -194,6 +194,11 @@ end
 task :run_input do
   puts "# Enter command to run (use arrow keys for history):"
   $cmd = ENV['CMD'] || Chake::Readline.readline
+  if !$cmd || $cmd.strip == ''
+    puts
+    puts "I: no command provided, operation aborted."
+    exit(1)
+  end
 end
 
 desc "upload to all nodes"
