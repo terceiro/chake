@@ -3,10 +3,10 @@
 require 'yaml'
 require 'json'
 require 'tmpdir'
-require 'readline'
 
 require 'chake/version'
 require 'chake/node'
+require 'chake/readline'
 
 nodes_file = ENV['CHAKE_NODES'] || 'nodes.yaml'
 node_data = File.exists?(nodes_file) && YAML.load_file(nodes_file) || {}
@@ -192,8 +192,8 @@ $nodes.each do |node|
 end
 
 task :run_input do
-  puts "# Enter command to run on all servers:"
-  $cmd = ENV['CMD'] || Readline.readline('$ ')
+  puts "# Enter command to run (use arrow keys for history):"
+  $cmd = ENV['CMD'] || Chake::Readline.readline
 end
 
 desc "upload to all nodes"
