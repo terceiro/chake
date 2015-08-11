@@ -1,6 +1,11 @@
-# chake
+chake(1) - serverless configuration with chef
+=============================================
 
-Simple host management with chef and rake. No chef server required.
+chake is a tool that helps you manage multiple hosts with, without the need for
+a chef server. Configuration is managed in a local directory, which should
+probably be under version control with **git(1)** or anything else.
+Configuration is usually deployed via rsync over SSH, and applied by invoking
+**chef-solo(1)** over SSH on each host.
 
 ## Installation
 
@@ -202,15 +207,24 @@ local://laptop:
 When you run `rake converge` on `desktop`, `laptop` will be skipped, and
 vice-versa.
 
-### Environment variables
+## Environment variables
 
-|Variable|Meaning|Default value|
-|--------|-------|-------------|
-| `$CHAKE_SSH_CONFIG` | local SSH configuration file | `.ssh_config` |
-| `$CHAKE_SSH_PREFIX` | Command to prefix SSH (and rsync over SSH) calls with | _none_ |
-| `$CHAKE_RSYNC_OPTIONS` | extra options to pass to `rsync`. Useful to e.g. exclude large files from being upload to each server | _none_ |
-| `$CHAKE_NODES` | File containing the list of servers to be managed | `nodes.yaml` |
-| `$CHAKE_TMPDIR` | Directory used to store temporary cache files | `tmp/chake` |
+* `$CHAKE_SSH_CONFIG`:
+  Local SSH configuration file. Defaults to `.ssh_config`.
+* `$CHAKE_SSH_PREFIX`:
+  Command to prefix SSH (and rsync over SSH) calls with.
+* `$CHAKE_RSYNC_OPTIONS`:
+  extra options to pass to `rsync`. Useful to e.g. exclude large files from
+  being upload to each server.
+* `$CHAKE_NODES`:
+  File containing the list of servers to be managed. Default: `nodes.yaml`.
+* `$CHAKE_TMPDIR`:
+  Directory used to store temporary cache files. Default: `tmp/chake`.
+
+## See also
+
+* **rake(1)**, **chef-solo(1)**
+* Chef documentation: https://docs.chef.io/
 
 ## Contributing
 

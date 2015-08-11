@@ -1,0 +1,22 @@
+task :default => 'man/chake.1'
+
+file 'man/chake.1' => ['man/chake.1.ronn', 'man/readme2man.sed'] do
+  sh 'ronn --roff man/chake.1.ronn'
+end
+
+file 'man/chake.1.ronn' => 'README.md' do |t|
+  sh "sed -f man/readme2man.sed README.md > #{t.name} || (rm -f #{t.name}; false)"
+end
+
+task :install => 'man/chake.1' do
+  prefix = ENV['PREFIX'] || File.exists?('debian/rules') && '/usr' || '/usr/local'
+  target = [ENV["DESTDIR"], prefix , 'man/man1'].compact
+  man = File.join(*target)
+  sh 'install', '-d', '-m', '0755', man
+  sh 'install', '-m', '0644', 'man/chake.1', man
+end
+
+task :clean do
+  rm_f 'man/chake.1'
+  rm_f 'man/chake.1.ronn'
+end
