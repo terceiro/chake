@@ -1,3 +1,7 @@
+# 0.9.1
+
+* fix manpage installation path
+
 # 0.9
 
 * fix build step for obs uploads

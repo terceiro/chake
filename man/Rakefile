@@ -10,7 +10,7 @@ end
 
 task :install => 'man/chake.1' do
   prefix = ENV['PREFIX'] || File.exists?('debian/rules') && '/usr' || '/usr/local'
-  target = [ENV["DESTDIR"], prefix , 'man/man1'].compact
+  target = [ENV["DESTDIR"], prefix , 'share/man/man1'].compact
   man = File.join(*target)
   sh 'install', '-d', '-m', '0755', man
   sh 'install', '-m', '0644', 'man/chake.1', man
