@@ -1,3 +1,10 @@
+# 0.9
+
+* fix build step for obs uploads
+* add infrastructure to build and install a manpage
+* Add support for a nodes.d/ directory; very useful when dealing with a larger
+  amount of nodes.
+
 # 0.8
 
 * gemspec: minor improvements in the long description
