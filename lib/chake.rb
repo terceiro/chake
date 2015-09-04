@@ -9,7 +9,11 @@ require 'chake/node'
 require 'chake/readline'
 
 nodes_file = ENV['CHAKE_NODES'] || 'nodes.yaml'
+nodes_directory = ENV['CHAKE_NODES_D'] || 'nodes.d'
 node_data = File.exists?(nodes_file) && YAML.load_file(nodes_file) || {}
+Dir.glob(File.join(nodes_directory, '*.yaml')).sort.each do |f|
+  node_data.merge!(YAML.load_file(f))
+end
 $nodes = node_data.map { |node,data| Chake::Node.new(node, data) }.reject(&:skip?).uniq(&:hostname)
 $chake_tmpdir = ENV.fetch('CHAKE_TMPDIR', 'tmp/chake')
 
@@ -28,6 +32,15 @@ EOF
       puts "[create] nodes.yaml"
     end
   end
+
+  if File.exist?('nodes.d')
+    puts '[exists] nodes.d/'
+  else
+    FileUtils.mkdir_p 'nodes.d'
+    puts '[ mkdir] nodes.d/'
+  end
+
+
   if File.exists?('config.rb')
     puts '[exists] config.rb'
   else

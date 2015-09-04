@@ -16,6 +16,7 @@ Configuration is usually deployed via rsync over SSH, and applied by invoking
 ```
 $ chake init
 [create] nodes.yaml
+[ mkdir] nodes.d/
 [create] config.rb
 [ mkdir] config/roles
 [ mkdir] cookbooks/basics/recipes/
@@ -28,6 +29,7 @@ A brief explanation of the created files:
 |File|Description|
 |----|-----------|
 | `nodes.yaml`  | where you will list the hosts you will be managing, and what recipes to apply to each of them. |
+| `nodes.d`  | a directory with multiple files in the same format as nodes.yaml. All files matching `*.yaml` in it will be added to the list of nodes. |
 | `config.rb` | contains the chef-solo configuration. You can modify it, but usually you won't need to. |
 | `config/roles` | directory is where you can put your role definitions. |
 | `cookbooks` | directory where you will store your cookbooks. A sample cookbook called "basics" is created, but feel free to remove it and add actual cookbooks. |
@@ -218,6 +220,8 @@ vice-versa.
   being upload to each server.
 * `$CHAKE_NODES`:
   File containing the list of servers to be managed. Default: `nodes.yaml`.
+* `$CHAKE_NODES_D`:
+  Directory containing node definition files servers to be managed. Default: `nodes.d`.
 * `$CHAKE_TMPDIR`:
   Directory used to store temporary cache files. Default: `tmp/chake`.
 
