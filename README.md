@@ -146,6 +146,25 @@ the node URLs:
 
 ## Extra features
 
+### Hooks
+
+You can define rake tasks that will be executed before bootstrapping nodes,
+before uploading configuration management content to nodes, and before
+converging. To do this, you just need to enhance the corresponding tasks:
+
+* `bootstrap_common`: executed before bootstrapping nodes (even if nodes have
+  already been bootstrapped)
+* `upload_common`: executed before uploading content to the node
+* `converge_common`: executed before converging (i.e. running chef)
+
+Example:
+
+```
+task :bootstrap_common do
+  sh './scripts/pre-bootstrap-checks'
+end
+```
+
 ### Encrypted files
 
 Any files ending matching `*.gpg` and `*.asc` will be decrypted with GnuPG

@@ -120,6 +120,15 @@ end
 
 bootstrap_steps = Dir.glob(File.expand_path('chake/bootstrap/*.sh', File.dirname(__FILE__))).sort
 
+desc 'Executed before bootstrapping'
+task :bootstrap_common
+
+desc 'Executed before uploading'
+task :upload_common
+
+desc 'Executed before uploading'
+task :converge_common
+
 $nodes.each do |node|
 
   hostname = node.hostname
@@ -138,7 +147,7 @@ $nodes.each do |node|
   end
 
   desc "bootstrap #{hostname}"
-  task "bootstrap:#{hostname}" => bootstrap_script do
+  task "bootstrap:#{hostname}" => [:bootstrap_common, bootstrap_script] do
     config = File.join($chake_tmpdir, hostname + '.json')
 
     if File.exists?(config)
@@ -161,7 +170,7 @@ $nodes.each do |node|
   end
 
   desc "upload data to #{hostname}"
-  task "upload:#{hostname}" do
+  task "upload:#{hostname}" => :upload_common do
     encrypted = encrypted_for(hostname)
     rsync_excludes = (encrypted.values + encrypted.keys).map { |f| ["--exclude", f] }.flatten
     rsync_excludes << "--exclude" << ".git/"
@@ -188,7 +197,7 @@ $nodes.each do |node|
   end
 
   desc "converge #{hostname}"
-  task "converge:#{hostname}" => ["bootstrap:#{hostname}", "upload:#{hostname}"] do
+  task "converge:#{hostname}" => [:converge_common, "bootstrap:#{hostname}", "upload:#{hostname}"] do
     chef_logging = Rake.application.options.silent && '-l fatal' || ''
     node.run_as_root "chef-solo -c #{node.path}/config.rb #{chef_logging} -j #{node.path}/#{$chake_tmpdir}/#{hostname}.json"
   end
