@@ -107,6 +107,7 @@ task :check_changelog do
   end
 end
 
+desc 'Makes a release'
 task :release => [:check_tag, :check_changelog, :test, 'bundler:release', :obs]
 
 task :default => :test

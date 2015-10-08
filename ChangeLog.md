@@ -1,3 +1,8 @@
+# 0.10
+
+* Add hook functionality. See README/manpage for documentation.
+* README.md: a few reviews
+
 # 0.9.1
 
 * fix manpage installation path
