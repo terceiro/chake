@@ -48,42 +48,6 @@ end
 
 task 'build:all' => ['build:debsrc', 'build:rpmsrc']
 
-task :obs => 'build:all' do
-  if !File.exist?('tmp/obs/home:terceiro:chake/chake')
-    mkdir_p 'tmp/obs'
-    chdir 'tmp/obs' do
-      sh 'osc', 'checkout', 'home:terceiro:chake', 'chake'
-    end
-  end
-
-  # remove old files
-  chdir 'tmp/obs/home:terceiro:chake/chake' do
-    Dir.glob('*').each do |f|
-      sh 'osc', 'remove', '--force', f
-    end
-  end
-
-  # copy over new files
-  [
-    "pkg/#{pkg.name}-#{pkg.version}.tar.gz",
-    "pkg/#{pkg.name}.spec",
-    "pkg/#{pkg.name}_#{pkg.version}.orig.tar.gz",
-    "pkg/#{pkg.name}_#{pkg.version}-1.debian.tar.xz",
-    "pkg/#{pkg.name}_#{pkg.version}-1.dsc",
-  ].each do |f|
-    sh 'cp', '--dereference', f, 'tmp/obs/home:terceiro:chake/chake'
-  end
-
-  # push new files to the repository
-  chdir 'tmp/obs/home:terceiro:chake/chake' do
-    Dir.glob('*').each do |f|
-      sh 'osc', 'add', f
-    end
-    sh 'osc', 'commit', '--message', "#{pkg.name}, version #{pkg.version}"
-  end
-
-end
-
 desc 'lists changes since last release'
 task :changelog do
   last_tag = `git tag | sort -V`.split.last
@@ -108,6 +72,6 @@ task :check_changelog do
 end
 
 desc 'Makes a release'
-task :release => [:check_tag, :check_changelog, :test, 'bundler:release', :obs]
+task :release => [:check_tag, :check_changelog, :test, 'bundler:release']
 
 task :default => :test
