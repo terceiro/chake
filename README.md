@@ -77,24 +77,23 @@ host2.mycompany.com                      ssh
 
 ## Preparings nodes to be managed
 
-Nodes has very few requirements to be managed with `chake`:
+Nodes have very few initial requirements to be managed with `chake`:
 
 - The node must be accessible via SSH.
-- The node must have `sudo` installed.
 - The user you connect to the node must either be `root`, or be allowed to run
-  `sudo`.
+  `sudo` (in which case `sudo` must be installed).
 
 **A note on password prompts:** every time chake calls ssh on a node, you may
 be required to type in your password; every time chake calls sudo on the node,
-you may be require to type in your password. For managaing one or two nodes
-this is probably fine, but for larger numbers it is not practical. To avoid
+you may be require to type in your password. For managing one or two nodes this
+is probably fine, but for larger numbers of nodes it is not practical. To avoid
 password prompts, you can:
 
-- configure SSH key authentication.
-    - this is more secure than using passwords, anyway.
-    - bonus points: disable password authentication completely, and only allow
-      key-based authentication
-- configure passwordless `sudo` access for your user on the server
+- Configure SSH key-based authentication. This is more secure than using passwords.
+  While you are at it, you also probably want disable password authentication
+  completely, and only allow key-based authentication
+- Configure passwordless `sudo` access for the user you use to connect to your
+  nodes.
 
 ## Applying cookbooks
 
