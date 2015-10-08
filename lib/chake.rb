@@ -223,7 +223,7 @@ task :bootstrap => $nodes.map { |node| "bootstrap:#{node.hostname}" }
 desc "converge all nodes (default)"
 task "converge" => $nodes.map { |node| "converge:#{node.hostname}" }
 
-task "run a command on all nodes"
+desc "run a command on all nodes"
 task :run => $nodes.map { |node| "run:#{node.hostname}" }
 
 task :default => :converge
