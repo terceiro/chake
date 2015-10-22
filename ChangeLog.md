@@ -1,3 +1,8 @@
+# 0.10.1
+
+* actually implement support for custom ports in Node URL's. Despite being
+  documented, that didn't actually work until now.
+
 # 0.10
 
 * Add hook functionality. See README/manpage for documentation.
