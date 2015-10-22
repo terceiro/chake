@@ -1,8 +1,10 @@
+%define gem_name <%= pkg.name %>
+
 Summary: <%= pkg.summary %>
 Name: <%= pkg.name %>
 Version: <%= pkg.version %>
 Release: 1
-Source0: <%= pkg.name %>-<%= pkg.version %>.tar.gz
+Source0: %{name}-%{version}.tar.gz
 License: <%= pkg.license %>
 Group: Development/Tools
 Prefix: %{_prefix}
@@ -12,30 +14,28 @@ BuildArch: noarch
 BuildRequires: ruby, rubygem-rake, rubygem-bundler
 Requires: ruby, rubygem-rake
 
-%define gemdir <%= Gem.dir %>
-%define gembuilddir %{buildroot}%{gemdir}
-
 %description
 <%= pkg.description %>
 
 %prep
-%setup -n <%= pkg.name %>-<%= pkg.version %>
+%setup -n %{name}-%{version}
 
 %build
 
-%install
 %{__rm} -rf %{buildroot}
-mkdir -p %{gembuilddir}
 sed -i -e 's#spec.files\s*=.*#spec.files = Dir.glob("**/*")#' %{name}.gemspec
-gem install --local --install-dir %{gembuilddir} --force pkg/%{name}-%{version}.gem
-mkdir -p %{buildroot}/%{_bindir}
-mv %{gembuilddir}/bin/* %{buildroot}/%{_bindir}
-rmdir %{gembuilddir}/bin
+rake bundler:build
+%gem_install -n pkg/%{name}-%{version}.gem
+
+%install
+cp -a usr %{buildroot}/usr
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%{gemdir}
-%{_bindir}/*
-
+%{gem_instdir}/
+%exclude %{gem_cache}
+%{gem_spec}
+%{_bindir}/chake
+%doc %{gem_docdir}
