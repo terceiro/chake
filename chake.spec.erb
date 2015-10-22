@@ -1,13 +1,8 @@
-%define name <%= pkg.name %>
-%define version <%= pkg.version %>
-%define unmangled_version <%= pkg.version %>
-%define release 1
-
 Summary: <%= pkg.summary %>
-Name: %{name}
-Version: %{version}
-Release: %{release}
-Source0: %{name}-%{unmangled_version}.tar.gz
+Name: <%= pkg.name %>
+Version: <%= pkg.version %>
+Release: 1
+Source0: <%= pkg.name %>-<%= pkg.version %>.tar.gz
 License: <%= pkg.license %>
 Group: Development/Tools
 Prefix: %{_prefix}
@@ -24,7 +19,7 @@ Requires: ruby, rubygem-rake
 <%= pkg.description %>
 
 %prep
-%setup -n %{name}-%{unmangled_version} -n %{name}-%{unmangled_version}
+%setup -n <%= pkg.name %>-<%= pkg.version %>
 
 %build
 
@@ -32,7 +27,6 @@ Requires: ruby, rubygem-rake
 %{__rm} -rf %{buildroot}
 mkdir -p %{gembuilddir}
 sed -i -e 's#spec.files\s*=.*#spec.files = Dir.glob("**/*")#' %{name}.gemspec
-rake build
 gem install --local --install-dir %{gembuilddir} --force pkg/%{name}-%{version}.gem
 mkdir -p %{buildroot}/%{_bindir}
 mv %{gembuilddir}/bin/* %{buildroot}/%{_bindir}

@@ -34,7 +34,11 @@ task 'deb:install' => 'build:debsrc'do
 end
 
 desc 'Create source RPM package'
-task 'build:rpmsrc' => ['build:tarball', 'pkg/chake.spec']
+task 'build:rpmsrc' => ['build:tarball', 'pkg/chake.spec'] do
+  chdir 'pkg' do
+    sh 'rpmbuild --define "_topdir .rpmbuild" --define "_sourcedir $(pwd)" --define "_srcrpmdir $(pwd)" -bs chake.spec --nodeps'
+  end
+end
 
 file 'pkg/chake.spec' => ['chake.spec.erb', 'lib/chake/version.rb'] do |t|
   require 'erb'
