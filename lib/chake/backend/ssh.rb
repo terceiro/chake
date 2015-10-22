@@ -5,7 +5,7 @@ module Chake
     class Ssh < Backend
 
       def scp
-        ['scp', ssh_config].flatten.compact
+        ['scp', ssh_config, scp_options].flatten.compact
       end
 
       def scp_dest
@@ -21,7 +21,7 @@ module Chake
       end
 
       def command_runner
-        [ssh_prefix, 'ssh', ssh_config, ssh_target].flatten.compact
+        [ssh_prefix, 'ssh', ssh_config, ssh_options, ssh_target].flatten.compact
       end
 
       def shell_command
@@ -31,7 +31,21 @@ module Chake
       private
 
       def rsync_ssh
-        File.exist?(ssh_config_file) && ['-e', 'ssh -F ' + ssh_config_file ] || []
+        @rsync_ssh ||=
+          begin
+            ssh_command = 'ssh'
+            if File.exist?(ssh_config_file)
+              ssh_command +=  ' -F ' + ssh_config_file
+            end
+            if node.port
+              ssh_command += ' -p ' + node.port.to_s
+            end
+            if ssh_command == 'ssh'
+              []
+            else
+              ['-e', ssh_command]
+            end
+          end
       end
 
       def ssh_config
@@ -48,6 +62,14 @@ module Chake
 
       def ssh_target
         [node.remote_username, node.hostname].compact.join('@')
+      end
+
+      def ssh_options
+        node.port && ['-p', node.port.to_s] || []
+      end
+
+      def scp_options
+        node.port && ['-P', node.port.to_s] || []
       end
 
     end

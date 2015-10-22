@@ -34,6 +34,17 @@ describe Chake::Node do
     expect(with_data.data).to be_a(Hash)
   end
 
+  let(:with_port) { Chake::Node.new('ssh://foo.bar.com:2222') }
+  it('accepts a port specification') do
+    expect(with_port.port).to eq(2222)
+  end
+
+  let(:with_port_but_no_scheme) { Chake::Node.new('foo.bar.com:2222') }
+  it('accepts a port specification without a scheme') do
+    expect(with_port_but_no_scheme.port).to eq(2222)
+    expect(with_port_but_no_scheme.backend.to_s).to eq('ssh')
+  end
+
   [:run, :run_as_root, :rsync_dest].each do |method|
     it("delegates #{method} to backend") do
       node = simple

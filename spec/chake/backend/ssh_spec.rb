@@ -21,4 +21,17 @@ describe Chake::Backend::Ssh do
     expect(node.remote_username).to eq('myuser')
   end
 
+  context 'with a custom port' do
+    let(:node) { Chake::Node.new('ssh://myhost:2222') }
+    it 'uses port with ssh' do
+      expect(backend.command_runner).to eq(['ssh', '-p', '2222', 'myhost'])
+    end
+    it 'uses port with scp' do
+      expect(backend.scp).to eq(['scp', '-P', '2222'])
+    end
+    it 'uses port with rsync' do
+      expect(backend.send(:rsync_ssh)).to eq(['-e', 'ssh -p 2222'])
+    end
+  end
+
 end

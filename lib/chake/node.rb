@@ -11,6 +11,7 @@ module Chake
     extend Forwardable
 
     attr_reader :hostname
+    attr_reader :port
     attr_reader :username
     attr_reader :remote_username
     attr_reader :path
@@ -25,16 +26,17 @@ module Chake
 
     def initialize(hostname, data = {})
       uri = URI.parse(hostname)
-      if !uri.scheme && !uri.host && uri.path
+      if !uri.host && ((!uri.scheme && uri.path) || (uri.scheme && uri.opaque))
         uri = URI.parse("ssh://#{hostname}")
       end
-      if uri.path.empty?
+      if uri.path && uri.path.empty?
         uri.path = nil
       end
 
       @backend_name = uri.scheme
 
       @hostname = uri.host
+      @port = uri.port
       @username = uri.user || Etc.getpwuid.name
       @remote_username = uri.user
       @path = uri.path || "/var/tmp/chef.#{username}"
