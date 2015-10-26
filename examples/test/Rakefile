@@ -15,5 +15,5 @@ manifest = %w[
 
 desc 'removes everything'
 task :clean do
-  rm_rf Dir.glob('*') - manifest
+  rm_rf Dir.glob('**/*') - manifest
 end
