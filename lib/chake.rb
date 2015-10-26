@@ -99,14 +99,23 @@ def if_files_changed(node, group_name, files)
   if files.empty?
     return
   end
-  hash = IO.popen(['sha1sum', *files]).read
+  hash_io = IO.popen(['xargs', 'sha1sum'], 'w+')
+  files.sort.each { |f| hash_io.puts(f) }
+  hash_io.close_write
+  current_hash = hash_io.read
+
   hash_file = File.join($chake_tmpdir, node + '.' + group_name + '.sha1sum')
-  if !File.exists?(hash_file) || File.read(hash_file) != hash
+  hash_on_disk = nil
+  if File.exists?(hash_file)
+    hash_on_disk = File.read(hash_file)
+  end
+
+  if current_hash != hash_on_disk
     yield
   end
   FileUtils.mkdir_p(File.dirname(hash_file))
   File.open(hash_file, 'w') do |f|
-    f.write(hash)
+    f.write(current_hash)
   end
 end
 
@@ -179,7 +188,8 @@ $nodes.each do |node|
     rsync = node.rsync + ["-avp"] + ENV.fetch('CHAKE_RSYNC_OPTIONS', '').split
     rsync_logging = Rake.application.options.silent && '--quiet' || '--verbose'
 
-    files = Dir.glob("**/*").select { |f| !File.directory?(f) } - encrypted.keys - encrypted.values
+    hash_files = Dir.glob(File.join($chake_tmpdir, '*.sha1sum'))
+    files = Dir.glob("**/*").select { |f| !File.directory?(f) } - encrypted.keys - encrypted.values - hash_files
     if_files_changed(hostname, 'plain', files) do
       sh *rsync, '--delete', rsync_logging, *rsync_excludes, './', node.rsync_dest
     end
