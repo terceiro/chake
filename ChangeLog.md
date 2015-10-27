@@ -1,3 +1,12 @@
+# 0.10.2
+
+* Fix check for modified files at the upload phase. Now chake will properly
+  avoiding rsync calls when there is no changed files since the latest upload.
+* Fix generated RPM spec file. Will now properly build, install, and work under
+  both CentOS 7 and Fedora 22+.
+* Collect test coverage statistics when running tests.
+  * Added dependency on simplecov
+
 # 0.10.1
 
 * actually implement support for custom ports in Node URL's. Despite being
