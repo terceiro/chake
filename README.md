@@ -95,6 +95,24 @@ password prompts, you can:
 - Configure passwordless `sudo` access for the user you use to connect to your
   nodes.
 
+## Checking connectivity and initialhost setup
+
+To check whether hosts are correcly configured, you can use the `check` task:
+
+```bash
+$ rake check
+```
+
+That will run the the `sudo true` command on each host. If that pass without
+you having to passwords, you are sure that
+
+* you have SSH access to each host; and
+* the user you are connecting as has password-less sudo correctly setup.
+
+```bash
+$ rake check
+```
+
 ## Applying cookbooks
 
 To apply the configuration to all nodes, run

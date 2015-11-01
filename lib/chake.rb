@@ -221,6 +221,12 @@ $nodes.each do |node|
   task "login:#{hostname}" do
     node.run_shell
   end
+
+  desc 'checks connectivity and setup on all nodes'
+  task "check:#{hostname}" do
+    node.run('sudo true')
+  end
+
 end
 
 task :run_input do
@@ -246,3 +252,8 @@ desc "run a command on all nodes"
 task :run => $nodes.map { |node| "run:#{node.hostname}" }
 
 task :default => :converge
+
+desc 'checks connectivity and setup on all nodes'
+task :check => ($nodes.map { |node| "check:#{node.hostname}" }) do
+  puts "✓ all hosts OK"
+end
