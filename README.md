@@ -38,7 +38,7 @@ A brief explanation of the created files:
 After the repository is created, you can call either `chake` or `rake`, as they
 are completely equivalent.
 
-## Managing nodes and recipes
+## Managing nodes
 
 Just after you created your repository, the contents of `nodes.yaml` is the
 following:
@@ -95,7 +95,7 @@ password prompts, you can:
 - Configure passwordless `sudo` access for the user you use to connect to your
   nodes.
 
-## Checking connectivity and initialhost setup
+## Checking connectivity and initial host setup
 
 To check whether hosts are correcly configured, you can use the `check` task:
 
@@ -125,6 +125,12 @@ To apply the configuration to a single node, run
 
 ```bash
 $ rake converge:$NODE
+```
+
+To check the existing tasks, run
+
+```bash
+$ rake -T
 ```
 
 ## Writing cookbooks
