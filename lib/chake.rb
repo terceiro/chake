@@ -206,11 +206,26 @@ $nodes.each do |node|
     end
   end
 
+  converge_dependencies = [:converge_common, "bootstrap:#{hostname}", "upload:#{hostname}"]
+
   desc "converge #{hostname}"
-  task "converge:#{hostname}" => [:converge_common, "bootstrap:#{hostname}", "upload:#{hostname}"] do
+  task "converge:#{hostname}" => converge_dependencies do
     chef_logging = Rake.application.options.silent && '-l fatal' || ''
     node.run_as_root "chef-solo -c #{node.path}/config.rb #{chef_logging} -j #{node.path}/#{$chake_tmpdir}/#{hostname}.json"
   end
+
+  desc 'apply <recipe> on #{hostname}'
+  task "apply:#{hostname}", :recipe do |task, args|
+    recipe = args[:recipe]
+    if !recipe
+      puts "Usage: rake apply[RECIPE]" if !recipe
+      puts "       rake apply:NODE[RECIPE]" if !recipe
+      abort
+    end
+    chef_logging = Rake.application.options.silent && '-l fatal' || ''
+    node.run_as_root "chef-solo -c #{node.path}/config.rb #{chef_logging} -j #{node.path}/#{$chake_tmpdir}/#{hostname}.json --override-runlist recipe[#{recipe}]"
+  end
+  task "apply:#{hostname}" => converge_dependencies
 
   desc "run a command on #{hostname}"
   task "run:#{hostname}" => 'run_input' do
@@ -247,6 +262,9 @@ task :bootstrap => $nodes.map { |node| "bootstrap:#{node.hostname}" }
 
 desc "converge all nodes (default)"
 task "converge" => $nodes.map { |node| "converge:#{node.hostname}" }
+
+desc "run <recipe> on all nodes"
+task "apply", [:recipe] => $nodes.map { |node| "apply:#{node.hostname}" }
 
 desc "run a command on all nodes"
 task :run => $nodes.map { |node| "run:#{node.hostname}" }

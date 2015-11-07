@@ -127,6 +127,18 @@ To apply the configuration to a single node, run
 $ rake converge:$NODE
 ```
 
+To apply a single recipe on all nodes, run
+
+```bash
+$ rake apply[myrecipe]
+```
+
+To apply a single recipe on a specific node, run
+
+```bash
+$ rake apply:$NODE[myrecipe]
+```
+
 To check the existing tasks, run
 
 ```bash
