@@ -240,8 +240,11 @@ $nodes.each do |node|
 end
 
 task :run_input, :command do |task,args|
-  puts "# Enter command to run (use arrow keys for history):"
-  $cmd_to_run = args[:command] || Chake::Readline::Commands.readline
+  $cmd_to_run = args[:command]
+  if !$cmd_to_run
+    puts "# Enter command to run (use arrow keys for history):"
+    $cmd_to_run = Chake::Readline::Commands.readline
+  end
   if !$cmd_to_run || $cmd_to_run.strip == ''
     puts
     puts "I: no command provided, operation aborted."
