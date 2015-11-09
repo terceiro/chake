@@ -141,6 +141,24 @@ $ rake apply:$NODE[myrecipe]
 
 If you don't inform a recipe in the command line, you will be prompted for one.
 
+To run a shell command on all nodes, run
+
+```
+$ rake run[command]
+```
+
+If the `command` you want to run contains spaces, or other characters that are
+special do the shell, you have to quote them.
+
+To run a shell command on a specific node, run
+
+```
+$ rake run:$NODE[command]
+```
+
+If you don't inform a command in the command line, you will be prompted for
+one.
+
 To check the existing tasks, run
 
 ```bash

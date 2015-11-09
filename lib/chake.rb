@@ -223,8 +223,8 @@ $nodes.each do |node|
   task "apply:#{hostname}" => converge_dependencies
 
   desc "run a command on #{hostname}"
-  task "run:#{hostname}" => 'run_input' do
-    node.run($cmd)
+  task "run:#{hostname}", [:command] => [:run_input] do
+    node.run($cmd_to_run)
   end
 
   desc "Logs in to a shell on #{hostname}"
@@ -239,10 +239,10 @@ $nodes.each do |node|
 
 end
 
-task :run_input do
+task :run_input, :command do |task,args|
   puts "# Enter command to run (use arrow keys for history):"
-  $cmd = ENV['CMD'] || Chake::Readline::Commands.readline
-  if !$cmd || $cmd.strip == ''
+  $cmd_to_run = args[:command] || Chake::Readline::Commands.readline
+  if !$cmd_to_run || $cmd_to_run.strip == ''
     puts
     puts "I: no command provided, operation aborted."
     exit(1)
@@ -287,11 +287,11 @@ task :bootstrap => $nodes.map { |node| "bootstrap:#{node.hostname}" }
 desc "converge all nodes (default)"
 task "converge" => $nodes.map { |node| "converge:#{node.hostname}" }
 
-desc "run <recipe> on all nodes"
+desc "Apply <recipe> on all nodes"
 task "apply", [:recipe] => $nodes.map { |node| "apply:#{node.hostname}" }
 
-desc "run a command on all nodes"
-task :run => $nodes.map { |node| "run:#{node.hostname}" }
+desc "run <command> on all nodes"
+task :run, [:command] => $nodes.map { |node| "run:#{node.hostname}" }
 
 task :default => :converge
 
