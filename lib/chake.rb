@@ -7,6 +7,7 @@ require 'tmpdir'
 require 'chake/version'
 require 'chake/node'
 require 'chake/readline'
+require 'chake/tmpdir'
 
 nodes_file = ENV['CHAKE_NODES'] || 'nodes.yaml'
 nodes_directory = ENV['CHAKE_NODES_D'] || 'nodes.d'
@@ -15,7 +16,7 @@ Dir.glob(File.join(nodes_directory, '*.yaml')).sort.each do |f|
   node_data.merge!(YAML.load_file(f))
 end
 $nodes = node_data.map { |node,data| Chake::Node.new(node, data) }.reject(&:skip?).uniq(&:hostname)
-$chake_tmpdir = ENV.fetch('CHAKE_TMPDIR', 'tmp/chake')
+$chake_tmpdir = Chake.tmpdir
 
 desc "Initializes current directory with sample structure"
 task :init do
