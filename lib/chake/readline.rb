@@ -1,26 +1,33 @@
 require 'etc'
 require 'readline'
 
+require 'chake/tmpdir'
+
 module Chake
 
-  module Readline
+  class Readline
 
     class << self
 
       def history_file
-        File.join(Dir.home, '.chake_history')
+        raise NotImplementedError
+      end
+
+      def history
+        @history ||= []
+      end
+
+      def prompt
+        raise NotImplementedError
       end
 
       def init
         return if !File.exists?(history_file)
-        File.readlines(history_file).each do |line|
-          @last = line.strip
-          ::Readline::HISTORY.push(@last)
-        end
+        @history = File.readlines(history_file).map(&:strip)
       end
 
       def finish
-        history = ::Readline::HISTORY.map { |line| line }
+        return if !File.writable?(File.dirname(history_file)) || history.empty?
         File.open(history_file, 'w') do |f|
           history.last(500).each do |line|
             f.puts(line)
@@ -29,20 +36,45 @@ module Chake
       end
 
       def readline
-        input = ::Readline.readline('$ ')
+        ::Readline::HISTORY.clear
+        history.each do |cmd|
+          ::Readline::HISTORY.push(cmd)
+        end
+        input = ::Readline.readline(prompt)
         if input && input.strip != '' && input != @last
-          ::Readline::HISTORY.push(input)
+          history.push(input)
         end
         input
       end
 
     end
 
+    class Commands < Readline
+      def self.history_file
+        File.join(Chake.tmpdir, '.commands_history')
+      end
+      def self.prompt
+        '$ '
+      end
+    end
+
+    class Recipes < Readline
+      def self.history_file
+        File.join(Chake.tmpdir, '.recipes_history')
+      end
+      def self.prompt
+        '> '
+      end
+    end
+
   end
 
 end
 
-Chake::Readline.init
-at_exit do
-  Chake::Readline.finish
+Chake::Readline.constants.each do |subclass|
+  subclass = Chake::Readline.const_get(subclass)
+  subclass.init
+  at_exit do
+    subclass.finish
+  end
 end

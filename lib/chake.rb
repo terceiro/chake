@@ -216,15 +216,9 @@ $nodes.each do |node|
   end
 
   desc 'apply <recipe> on #{hostname}'
-  task "apply:#{hostname}", :recipe do |task, args|
-    recipe = args[:recipe]
-    if !recipe
-      puts "Usage: rake apply[RECIPE]" if !recipe
-      puts "       rake apply:NODE[RECIPE]" if !recipe
-      abort
-    end
+  task "apply:#{hostname}", [:recipe] => [:recipe_input] do |task, args|
     chef_logging = Rake.application.options.silent && '-l fatal' || ''
-    node.run_as_root "chef-solo -c #{node.path}/config.rb #{chef_logging} -j #{node.path}/#{$chake_tmpdir}/#{hostname}.json --override-runlist recipe[#{recipe}]"
+    node.run_as_root "chef-solo -c #{node.path}/config.rb #{chef_logging} -j #{node.path}/#{$chake_tmpdir}/#{hostname}.json --override-runlist recipe[#{$recipe_to_apply}]"
   end
   task "apply:#{hostname}" => converge_dependencies
 
@@ -247,11 +241,40 @@ end
 
 task :run_input do
   puts "# Enter command to run (use arrow keys for history):"
-  $cmd = ENV['CMD'] || Chake::Readline.readline
+  $cmd = ENV['CMD'] || Chake::Readline::Commands.readline
   if !$cmd || $cmd.strip == ''
     puts
     puts "I: no command provided, operation aborted."
     exit(1)
+  end
+end
+
+task :recipe_input, :recipe do |task,args|
+  $recipe_to_apply = args[:recipe]
+
+  if !$recipe_to_apply
+    recipes = Dir['**/*/recipes/*.rb'].map do |f|
+      f =~ %r{(.*/)?(.*)/recipes/(.*).rb$}
+      cookbook = $2
+      recipe = $3
+      recipe = nil if recipe == 'default'
+      [cookbook,recipe].compact.join('::')
+    end.sort
+    puts 'Available recipes:'
+
+    IO.popen('column', 'w') do |column|
+      column.puts(recipes)
+    end
+
+    $recipe_to_apply = Chake::Readline::Recipes.readline
+    if !$recipe_to_apply || $recipe_to_apply.empty?
+      puts
+      puts "I: no recipe provided, operation aborted."
+      exit(1)
+    end
+    if !recipes.include?($recipe_to_apply)
+      abort "E: no such recipe: #{$recipe_to_apply}"
+    end
   end
 end
 

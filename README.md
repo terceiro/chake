@@ -139,6 +139,8 @@ To apply a single recipe on a specific node, run
 $ rake apply:$NODE[myrecipe]
 ```
 
+If you don't inform a recipe in the command line, you will be prompted for one.
+
 To check the existing tasks, run
 
 ```bash
