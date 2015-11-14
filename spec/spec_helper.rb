@@ -1,5 +1,9 @@
-require 'simplecov'
-SimpleCov.start
+begin
+  require 'simplecov'
+  SimpleCov.start
+rescue LoadError
+  puts "W: simplecov not installed, we won't have a coverage report"
+end
 
 require 'chake/node'
 require 'chake/backend'
