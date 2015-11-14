@@ -1,3 +1,14 @@
+# 0.11
+
+* bootstrap: make sure FQDN matches hostname
+* Add `rake check` task to check SSH connectivity and sudo setup
+* Add tasks to apply a single recipe to nodes: `rake apply[recipe]` and `rake
+  apply:$NODE[recipe]`. If `[recipe]` is not passed in the command line, the
+  user is prompted for the recipe name.
+* run task changed to have the same interface and behavior as the new apply
+  task: `rake run[command]`, or `rake run:$NODE[command]`. If `[command]` is
+  not passed in the command line, the user is prompted for the command.
+
 # 0.10.2
 
 * Fix check for modified files at the upload phase. Now chake will properly
