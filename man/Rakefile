@@ -1,10 +1,15 @@
 task :default => 'man/chake.1'
 
-file 'man/chake.1' => ['man/chake.1.ronn', 'man/readme2man.sed'] do
-  sh 'ronn --roff man/chake.1.ronn'
+file 'man/chake.1' => ['man/chake.adoc'] do
+  command = 'asciidoctor --backend manpage --out-file man/chake.1 man/chake.adoc'
+  if ENV['SOURCE_DATE_EPOCH']
+    date = Time.at(ENV['SOURCE_DATE_EPOCH'].to_i)
+    command << " --attribute docdate=#{date.strftime('%Y-%m-%d')}"
+  end
+  sh command
 end
 
-file 'man/chake.1.ronn' => 'README.md' do |t|
+file 'man/chake.adoc' => ['README.md', 'man/readme2man.sed'] do |t|
   sh "sed -f man/readme2man.sed README.md > #{t.name} || (rm -f #{t.name}; false)"
 end
 
@@ -18,5 +23,5 @@ end
 
 task :clean do
   rm_f 'man/chake.1'
-  rm_f 'man/chake.1.ronn'
+  rm_f 'man/chake.adoc'
 end

@@ -1,5 +1,10 @@
-chake(1) - serverless configuration with chef
-=============================================
+# chake(1)
+
+## NAME
+
+chake - serverless configuration with chef
+
+## Introduction
 
 chake is a tool that helps you manage multiple hosts with, without the need for
 a chef server. Configuration is managed in a local directory, which should
@@ -26,14 +31,12 @@ $ chake init
 
 A brief explanation of the created files:
 
-|File|Description|
-|----|-----------|
-| `nodes.yaml`  | where you will list the hosts you will be managing, and what recipes to apply to each of them. |
-| `nodes.d`  | a directory with multiple files in the same format as nodes.yaml. All files matching `*.yaml` in it will be added to the list of nodes. |
-| `config.rb` | contains the chef-solo configuration. You can modify it, but usually you won't need to. |
-| `config/roles` | directory is where you can put your role definitions. |
-| `cookbooks` | directory where you will store your cookbooks. A sample cookbook called "basics" is created, but feel free to remove it and add actual cookbooks. |
-| `Rakefile` | Contains just the `require 'chake'` line. You can augment it with other tasks specific to your intrastructure. |
+* `nodes.yaml`: where you will list the hosts you will be managing, and what recipes to apply to each of them.
+* `nodes.d`: a directory with multiple files in the same format as nodes.yaml. All files matching `*.yaml` in it will be added to the list of nodes.
+* `config.rb`: contains the chef-solo configuration. You can modify it, but usually you won't need to.
+* `config/roles`: directory is where you can put your role definitions.
+* `cookbooks`: directory where you will store your cookbooks. A sample cookbook called "basics" is created, but feel free to remove it and add actual cookbooks.
+* `Rakefile`: Contains just the `require 'chake'` line. You can augment it with other tasks specific to your intrastructure.
 
 After the repository is created, you can call either `chake` or `rake`, as they
 are completely equivalent.
@@ -191,14 +194,11 @@ the node URLs:
 [backend://][username@]hostname[:port][/path]
 ```
 
-|Parameter|Meaning|Default value|
-|---------|-------|-------------|
-| backend | backend to use to connect to the host. `ssh` or `local` | `ssh` |
-| username | user name to connect with | The username on your local workstation |
-| hostname | the hostname to connect to | _none_ |
-| port | port number to connect to | 22 |
-| /path | where to store the cookbooks at the node | `/var/tmp/chef.$USERNAME` |
-
+* `backend`: backend to use to connect to the host. `ssh` or `local` (default: `ssh`)
+* `username`: user name to connect with (default: the username on your local workstation)
+* `hostname`: the hostname to connect to (default: _none_)
+* `port`: port number to connect to (default: 22)
+* `/path`:  where to store the cookbooks at the node (default: `/var/tmp/chef.$USERNAME`)
 
 ## Extra features
 

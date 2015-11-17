@@ -1,3 +1,5 @@
+1a :doctype: manpage
+
 /^## Install/,/^[^#]/ d
 /^## Contributing/,$ d
 
