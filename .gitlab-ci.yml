@@ -1,5 +1,6 @@
 before_script:
-  - bundle install
+  - git clean -dxf
+  - bundle install --path .bundle
 
 tests:
   script: bundle exec rake
