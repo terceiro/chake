@@ -2,5 +2,4 @@ before_script:
   - bundle install
 
 tests:
-  script:
-    - bundle exec rake
+  script: bundle exec rake
