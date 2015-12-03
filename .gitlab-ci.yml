@@ -1,0 +1,5 @@
+before_script:
+  - bundle install
+
+tests:
+  - bundle exec rake
