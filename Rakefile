@@ -20,6 +20,8 @@ task 'build:debsrc' => ['build:tarball'] do
   chdir 'pkg' do
     sh 'gem2deb', '--no-wnpp-check', '-s', '-p', pkg.name, "#{dirname}.tar.gz"
     chdir dirname do
+      ln 'man/Rakefile', 'debian/dh_ruby.rake'
+      sh "sed -i -e 's/-1/-1~0/ ; s/\*.*/* Development snapshot/' debian/changelog"
       sh 'dpkg-buildpackage', '-S', '-us', '-uc'
     end
   end
@@ -30,7 +32,7 @@ task 'deb:install' => 'build:debsrc'do
   chdir "pkg/#{pkg.name}-#{pkg.version}" do
     sh 'fakeroot debian/rules binary'
   end
-  sh 'sudo', 'dpkg', '-i', "pkg/#{pkg.name}_#{pkg.version}-1_all.deb"
+  sh 'sudo', 'dpkg', '-i', "pkg/#{pkg.name}_#{pkg.version}-1~0_all.deb"
 end
 
 desc 'Create source RPM package'
