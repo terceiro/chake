@@ -9,6 +9,7 @@ require 'chake/node'
 require 'chake/readline'
 require 'chake/tmpdir'
 
+chef_config = ENV['CHAKE_CHEF_CONFIG'] || 'config.rb'
 nodes_file = ENV['CHAKE_NODES'] || 'nodes.yaml'
 nodes_directory = ENV['CHAKE_NODES_D'] || 'nodes.d'
 node_data = File.exists?(nodes_file) && YAML.load_file(nodes_file) || {}
@@ -212,13 +213,13 @@ $nodes.each do |node|
   desc "converge #{hostname}"
   task "converge:#{hostname}" => converge_dependencies do
     chef_logging = Rake.application.options.silent && '-l fatal' || ''
-    node.run_as_root "chef-solo -c #{node.path}/config.rb #{chef_logging} -j #{node.path}/#{$chake_tmpdir}/#{hostname}.json"
+    node.run_as_root "chef-solo -c #{node.path}/#{chef_config} #{chef_logging} -j #{node.path}/#{$chake_tmpdir}/#{hostname}.json"
   end
 
   desc 'apply <recipe> on #{hostname}'
   task "apply:#{hostname}", [:recipe] => [:recipe_input] do |task, args|
     chef_logging = Rake.application.options.silent && '-l fatal' || ''
-    node.run_as_root "chef-solo -c #{node.path}/config.rb #{chef_logging} -j #{node.path}/#{$chake_tmpdir}/#{hostname}.json --override-runlist recipe[#{$recipe_to_apply}]"
+    node.run_as_root "chef-solo -c #{node.path}/#{chef_config} #{chef_logging} -j #{node.path}/#{$chake_tmpdir}/#{hostname}.json --override-runlist recipe[#{$recipe_to_apply}]"
   end
   task "apply:#{hostname}" => converge_dependencies
 

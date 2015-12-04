@@ -298,6 +298,8 @@ vice-versa.
   Directory containing node definition files servers to be managed. Default: `nodes.d`.
 * `$CHAKE_TMPDIR`:
   Directory used to store temporary cache files. Default: `tmp/chake`.
+* `$CHAKE_CHEF_CONFIG`:
+  Chef configuration file, relative to the root of the repository. Default: `config.rb`.
 
 ## See also
 
