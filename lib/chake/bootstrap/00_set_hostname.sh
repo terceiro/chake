@@ -5,6 +5,11 @@ hostname --file /etc/hostname
 
 fqdn=$(hostname --fqdn || true)
 if [ "$fqdn" != "$hostname" ]; then
+  # if hostname is bar.example.com, we also want `bar` to be in /etc/hosts
+  short_hostname=$(echo "$hostname" | cut -d . -f 1)
+  if [ "$short_hostname" != "$hostname" ] && ! grep -q "\s${short_hostname}" /etc/hosts; then
+    hostname="$hostname $short_hostname"
+  fi
   printf "127.0.1.1\t%s\n" "$hostname" >> /etc/hosts
 fi
 
