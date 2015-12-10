@@ -1,4 +1,6 @@
 before_script:
+  - pwd
+  - echo $USER
   - bundle install --path .bundle
 
 tests:
