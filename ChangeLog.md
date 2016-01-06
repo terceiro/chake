@@ -1,3 +1,10 @@
+# 0.12
+
+* Switch manpage build from ronn to asciidoctor
+* Add ability to override the Chef configuration file by setting
+  `$CHAKE_CHEF_CONFIG` (default: `config.rb`)
+* bootstrap: ensure short hostname is in /etc/hosts
+
 # 0.11
 
 * bootstrap: make sure FQDN matches hostname
