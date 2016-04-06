@@ -201,7 +201,13 @@ $nodes.each do |node|
         encrypted.each do |encrypted_file, target_file|
           target = File.join(tmpdir, target_file)
           mkdir_p(File.dirname(target))
-          sh 'gpg', '--quiet', '--batch', '--use-agent', '--output', target, '--decrypt', encrypted_file
+          rm_f target
+          File.open(target, 'w', 0400) do |output|
+            IO.popen(['gpg', '--quiet', '--batch', '--use-agent', '--decrypt', encrypted_file]) do |data|
+              output.write(data.read)
+            end
+          end
+          puts "#{target} (decrypted)"
         end
         sh *rsync, rsync_logging, tmpdir + '/', node.rsync_dest
       end
