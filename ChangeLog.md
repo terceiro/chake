@@ -1,3 +1,9 @@
+# 0.13
+
+* transmit decrypted files with mode 0400
+* Use the Omnibus packages from Chef upstream on platforms where we don't have
+  proper Chef packages from the OS official repository.
+
 # 0.12
 
 * Switch manpage build from ronn to asciidoctor
