@@ -265,7 +265,7 @@ local://thunderbolt:
 ```
 
 To apply the configuration to the local host, you can use the conventional
-`rake converse:thunderbolt`, or the special target `rake local`.
+`rake converge:thunderbolt`, or the special target `rake local`.
 
 When converging all nodes, `chake` will skip nodes that are declared with the
 `local://` backend and whose hostname does not match the hostname  in the
