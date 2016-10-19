@@ -118,6 +118,16 @@ $ rake check
 
 ## Applying cookbooks
 
+Note that by default all tasks that apply to all hosts will run in parallel,
+using rake's support for multitasks. If for some reason you need to prevent
+that, you can pass `-j1` (or --jobs=1`) in the rake invocation. Note that rake
+will by only run N+4 tasks in parallel, where N is the number of cores on the
+machine you are running it in. If you have more than N+4 hosts and want all of
+them to be handled in parallel, you might want o pass `-j` (or `--jobs`),
+without any number so that rake will have no limits on the number of tasks to
+perform in parallel.
+
+
 To apply the configuration to all nodes, run
 
 ```bash
