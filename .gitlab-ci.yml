@@ -4,7 +4,9 @@ before_script:
   - bundle install --path .bundle
 
 tests:
-  script: bundle exec rake
+  script:
+    - bundle exec rake
+    - bundle exec rake -f man/Rakefile
   cache:
     paths:
       - .bundle
