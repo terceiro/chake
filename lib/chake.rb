@@ -289,23 +289,23 @@ task :recipe_input, :recipe do |task,args|
 end
 
 desc "upload to all nodes"
-task :upload => $nodes.map { |node| "upload:#{node.hostname}" }
+multitask :upload => $nodes.map { |node| "upload:#{node.hostname}" }
 
 desc "bootstrap all nodes"
-task :bootstrap => $nodes.map { |node| "bootstrap:#{node.hostname}" }
+multitask :bootstrap => $nodes.map { |node| "bootstrap:#{node.hostname}" }
 
 desc "converge all nodes (default)"
-task "converge" => $nodes.map { |node| "converge:#{node.hostname}" }
+multitask "converge" => $nodes.map { |node| "converge:#{node.hostname}" }
 
 desc "Apply <recipe> on all nodes"
-task "apply", [:recipe] => $nodes.map { |node| "apply:#{node.hostname}" }
+multitask "apply", [:recipe] => $nodes.map { |node| "apply:#{node.hostname}" }
 
 desc "run <command> on all nodes"
-task :run, [:command] => $nodes.map { |node| "run:#{node.hostname}" }
+multitask :run, [:command] => $nodes.map { |node| "run:#{node.hostname}" }
 
 task :default => :converge
 
 desc 'checks connectivity and setup on all nodes'
-task :check => ($nodes.map { |node| "check:#{node.hostname}" }) do
+multitask :check => ($nodes.map { |node| "check:#{node.hostname}" }) do
   puts "✓ all hosts OK"
 end
