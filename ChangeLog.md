@@ -1,3 +1,10 @@
+# 0.14
+
+* Fix typo in README.md
+  * thanks to Luciano Prestes Cavalcanti
+* Turn "all hosts" tasks (converge, upload, bootstrap, run, apply) into
+  multitasks. This will make them run in parallel.
+
 # 0.13
 
 * transmit decrypted files with mode 0400
