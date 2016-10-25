@@ -311,4 +311,6 @@ task :default => :converge
 desc 'checks connectivity and setup on all nodes'
 multitask :check => ($nodes.map { |node| "check:#{node.hostname}" }) do
   puts "✓ all hosts OK"
+  puts "  - ssh connection works"
+  puts "  - password-less sudo works"
 end
