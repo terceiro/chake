@@ -15,7 +15,7 @@ task 'build:tarball' => 'bundler:build' do
 end
 
 desc 'Create Debian source package'
-task 'build:debsrc' => ['build:tarball'] do
+task 'build:debsrc' => ['bundler:clobber', 'build:tarball'] do
   dirname = "#{pkg.name}-#{pkg.version}"
   chdir 'pkg' do
     sh 'gem2deb', '--no-wnpp-check', '-s', '-p', pkg.name, "#{dirname}.tar.gz"
