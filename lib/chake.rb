@@ -132,13 +132,16 @@ end
 bootstrap_steps = Dir.glob(File.expand_path('chake/bootstrap/*.sh', File.dirname(__FILE__))).sort
 
 desc 'Executed before bootstrapping'
-task :bootstrap_common
+task :bootstrap_common => :connect_common
 
 desc 'Executed before uploading'
-task :upload_common
+task :upload_common => :connect_common
 
 desc 'Executed before uploading'
-task :converge_common
+task :converge_common => :connect_common
+
+desc 'Executed before connecting to any host'
+task :connect_common
 
 $nodes.each do |node|
 
@@ -223,24 +226,24 @@ $nodes.each do |node|
   end
 
   desc 'apply <recipe> on #{hostname}'
-  task "apply:#{hostname}", [:recipe] => [:recipe_input] do |task, args|
+  task "apply:#{hostname}", [:recipe] => [:recipe_input, :connect_common] do |task, args|
     chef_logging = Rake.application.options.silent && '-l fatal' || ''
     node.run_as_root "chef-solo -c #{node.path}/#{chef_config} #{chef_logging} -j #{node.path}/#{$chake_tmpdir}/#{hostname}.json --override-runlist recipe[#{$recipe_to_apply}]"
   end
   task "apply:#{hostname}" => converge_dependencies
 
   desc "run a command on #{hostname}"
-  task "run:#{hostname}", [:command] => [:run_input] do
+  task "run:#{hostname}", [:command] => [:run_input, :connect_common] do
     node.run($cmd_to_run)
   end
 
   desc "Logs in to a shell on #{hostname}"
-  task "login:#{hostname}" do
+  task "login:#{hostname}" => :connect_common do
     node.run_shell
   end
 
   desc 'checks connectivity and setup on all nodes'
-  task "check:#{hostname}" do
+  task "check:#{hostname}" => :connect_common do
     node.run('sudo true')
   end
 

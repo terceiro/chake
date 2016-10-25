@@ -222,6 +222,9 @@ converging. To do this, you just need to enhance the corresponding tasks:
   already been bootstrapped)
 * `upload_common`: executed before uploading content to the node
 * `converge_common`: executed before converging (i.e. running chef)
+* `connect_common`: executed before doing any action that connects to any of
+  the hosts. This can be used for example to generate a ssh configuration file
+  based on the contents of the nodes definition files.
 
 Example:
 
