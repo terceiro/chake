@@ -1,3 +1,10 @@
+# 0.15
+
+* improve text in the parallel execution docs
+* add new hook: `connect_common`, which will run before any attempt to connect
+  to any node.
+* make output of `check` target more explicit about what was tested
+
 # 0.14
 
 * Fix typo in README.md
