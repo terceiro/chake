@@ -1,3 +1,9 @@
+# 0.16
+
+* make `run` also capture stderr, for now mixed together with stdout. In the
+  future that may be improved for example to print stderr output in red when
+  running on a TTY.
+
 # 0.15
 
 * improve text in the parallel execution docs
