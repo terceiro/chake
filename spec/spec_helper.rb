@@ -20,7 +20,7 @@ shared_examples "Chake::Backend" do |backend_class|
 
   it('runs commands') do
     io = StringIO.new("line 1\nline 2\n")
-    expect(IO).to receive(:popen).with(backend.command_runner + ['something']).and_return(io)
+    expect(IO).to receive(:popen).with(backend.command_runner + ['something'], Hash).and_return(io)
     expect(backend).to receive(:printf).with(anything, "myhost", "something")
     expect(backend).to receive(:printf).with(anything, "myhost", "line 1")
     expect(backend).to receive(:printf).with(anything, "myhost", "line 2")
