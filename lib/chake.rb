@@ -189,6 +189,8 @@ $nodes.each do |node|
     rsync_excludes = (encrypted.values + encrypted.keys).map { |f| ["--exclude", f] }.flatten
     rsync_excludes << "--exclude" << ".git/"
     rsync_excludes << "--exclude" << "cache/"
+    rsync_excludes << "--exclude" << "nodes/"
+    rsync_excludes << "--exclude" << "local-mode-cache/"
 
     rsync = node.rsync + ["-avp"] + ENV.fetch('CHAKE_RSYNC_OPTIONS', '').split
     rsync_logging = Rake.application.options.silent && '--quiet' || '--verbose'
