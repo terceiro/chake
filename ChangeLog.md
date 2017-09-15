@@ -1,3 +1,9 @@
+# 0.17
+
+* make rsync exclude extra directories who are created as root by chef-solo at
+  the server side. This fixes the case where upload phase when the SSH user is
+  not root.
+
 # 0.16
 
 * make `run` also capture stderr, for now mixed together with stdout. In the
