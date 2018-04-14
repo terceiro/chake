@@ -1,3 +1,8 @@
+# 0.17.1
+
+* manpage: drop ad-hoc handling of `SOURCE_DATE_EPOCH` (let asciidoctor handle
+  it)
+
 # 0.17
 
 * make rsync exclude extra directories who are created as root by chef-solo at
