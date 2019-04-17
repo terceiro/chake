@@ -316,3 +316,16 @@ multitask :check => ($nodes.map { |node| "check:#{node.hostname}" }) do
   puts "  - ssh connection works"
   puts "  - password-less sudo works"
 end
+
+desc 'runs a Ruby console in the chake environment'
+task :console do
+  require 'irb'
+  IRB.setup(eval("__FILE__"), argv: [])
+  workspace = IRB::WorkSpace.new(self)
+
+  puts 'chake - interactive console'
+  puts '---------------------------'
+  puts 'all node data in available in $nodes'
+  puts
+  IRB::Irb.new(workspace).run(IRB.conf)
+end
