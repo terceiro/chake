@@ -1,3 +1,9 @@
+# 0.18
+
+* add console task
+* manpage: fix header transformation
+* manpage: ignore intermediary .adoc file
+
 # 0.17.1
 
 * manpage: drop ad-hoc handling of `SOURCE_DATE_EPOCH` (let asciidoctor handle
