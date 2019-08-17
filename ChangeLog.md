@@ -1,3 +1,7 @@
+# 0.19
+
+* Protect node JSON files from other users
+
 # 0.18
 
 * add console task
