@@ -123,7 +123,8 @@ end
 
 
 def write_json_file(file, data)
-  File.open(file, 'w') do |f|
+  File.chmod(0600, file) if File.exists?(file)
+  File.open(file, 'w', 0600) do |f|
     f.write(JSON.pretty_generate(data))
     f.write("\n")
   end
