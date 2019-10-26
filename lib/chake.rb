@@ -247,7 +247,7 @@ $nodes.each do |node|
 
   desc 'checks connectivity and setup on all nodes'
   task "check:#{hostname}" => :connect_common do
-    node.run('sudo true')
+    node.run('sudo echo OK')
   end
 
 end
