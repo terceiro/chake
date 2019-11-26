@@ -17,12 +17,15 @@ end
 desc 'Create Debian source package'
 task 'build:debsrc' => ['bundler:clobber', 'build:tarball'] do
   dirname = "#{pkg.name}-#{pkg.version}"
+  v = `git describe`.strip.gsub('-', '.').sub(/^v/, '')
   chdir 'pkg' do
     sh 'gem2deb', '--no-wnpp-check', '-s', '-p', pkg.name, "#{dirname}.tar.gz"
+    sh "rename s/#{pkg.version}/#{v}/ *.orig.tar.gz"
     chdir dirname do
       ln 'man/Rakefile', 'debian/dh_ruby.rake'
-      sh "sed -i -e 's/-1/-1~0/ ; s/\*.*/* Development snapshot/' debian/changelog"
-      sh 'dpkg-buildpackage', '-S', '-us', '-uc'
+      sh "dch --preserve -v #{v}-1 'Development snapshot'"
+      sh "sed -i -e 's/#{pkg.version}/#{v}/' lib/chake/version.rb"
+      sh 'dpkg-buildpackage', '--diff-ignore=version.rb', '-S', '-us', '-uc'
     end
   end
 end
@@ -30,9 +33,9 @@ end
 desc 'Builds and installs Debian package'
 task 'deb:install' => 'build:debsrc'do
   chdir "pkg/#{pkg.name}-#{pkg.version}" do
-    sh 'fakeroot debian/rules binary'
+    sh 'dpkg-buildpackage --diff-ignore=version.rb -us -uc'
+    sh 'debi'
   end
-  sh 'sudo', 'dpkg', '-i', "pkg/#{pkg.name}_#{pkg.version}-1~0_all.deb"
 end
 
 desc 'Create source RPM package'
