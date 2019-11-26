@@ -4,20 +4,11 @@ require 'yaml'
 require 'json'
 require 'tmpdir'
 
+require 'chake/config'
 require 'chake/version'
-require 'chake/node'
 require 'chake/readline'
 require 'chake/tmpdir'
 
-chef_config = ENV['CHAKE_CHEF_CONFIG'] || 'config.rb'
-nodes_file = ENV['CHAKE_NODES'] || 'nodes.yaml'
-nodes_directory = ENV['CHAKE_NODES_D'] || 'nodes.d'
-node_data = File.exists?(nodes_file) && YAML.load_file(nodes_file) || {}
-Dir.glob(File.join(nodes_directory, '*.yaml')).sort.each do |f|
-  node_data.merge!(YAML.load_file(f))
-end
-$nodes = node_data.map { |node,data| Chake::Node.new(node, data) }.reject(&:skip?).uniq(&:hostname)
-$chake_tmpdir = Chake.tmpdir
 
 desc "Initializes current directory with sample structure"
 task :init do
@@ -84,7 +75,7 @@ end
 
 desc 'list nodes'
 task :nodes do
-  $nodes.each do |node|
+  Chake.nodes.each do |node|
     puts "%-40s %-5s\n" % [node.hostname, node.backend]
   end
 end
@@ -106,7 +97,7 @@ def if_files_changed(node, group_name, files)
   hash_io.close_write
   current_hash = hash_io.read
 
-  hash_file = File.join($chake_tmpdir, node + '.' + group_name + '.sha1sum')
+  hash_file = File.join(Chake.tmpdir, node + '.' + group_name + '.sha1sum')
   hash_on_disk = nil
   if File.exists?(hash_file)
     hash_on_disk = File.read(hash_file)
@@ -144,10 +135,10 @@ task :converge_common => :connect_common
 desc 'Executed before connecting to any host'
 task :connect_common
 
-$nodes.each do |node|
+Chake.nodes.each do |node|
 
   hostname = node.hostname
-  bootstrap_script = File.join($chake_tmpdir, 'bootstrap-' + hostname)
+  bootstrap_script = File.join(Chake.tmpdir, 'bootstrap-' + hostname)
 
   file bootstrap_script => bootstrap_steps do |t|
     mkdir_p(File.dirname(bootstrap_script))
@@ -163,7 +154,7 @@ $nodes.each do |node|
 
   desc "bootstrap #{hostname}"
   task "bootstrap:#{hostname}" => [:bootstrap_common, bootstrap_script] do
-    config = File.join($chake_tmpdir, hostname + '.json')
+    config = File.join(Chake.tmpdir, hostname + '.json')
 
     if File.exists?(config)
       # already bootstrapped, just overwrite
@@ -196,7 +187,7 @@ $nodes.each do |node|
     rsync = node.rsync + ["-avp"] + ENV.fetch('CHAKE_RSYNC_OPTIONS', '').split
     rsync_logging = Rake.application.options.silent && '--quiet' || '--verbose'
 
-    hash_files = Dir.glob(File.join($chake_tmpdir, '*.sha1sum'))
+    hash_files = Dir.glob(File.join(Chake.tmpdir, '*.sha1sum'))
     files = Dir.glob("**/*").select { |f| !File.directory?(f) } - encrypted.keys - encrypted.values - hash_files
     if_files_changed(hostname, 'plain', files) do
       sh *rsync, '--delete', rsync_logging, *rsync_excludes, './', node.rsync_dest
@@ -225,13 +216,13 @@ $nodes.each do |node|
   desc "converge #{hostname}"
   task "converge:#{hostname}" => converge_dependencies do
     chef_logging = Rake.application.options.silent && '-l fatal' || ''
-    node.run_as_root "chef-solo -c #{node.path}/#{chef_config} #{chef_logging} -j #{node.path}/#{$chake_tmpdir}/#{hostname}.json"
+    node.run_as_root "chef-solo -c #{node.path}/#{Chake.chef_config} #{chef_logging} -j #{node.path}/#{Chake.tmpdir}/#{hostname}.json"
   end
 
   desc 'apply <recipe> on #{hostname}'
   task "apply:#{hostname}", [:recipe] => [:recipe_input, :connect_common] do |task, args|
     chef_logging = Rake.application.options.silent && '-l fatal' || ''
-    node.run_as_root "chef-solo -c #{node.path}/#{chef_config} #{chef_logging} -j #{node.path}/#{$chake_tmpdir}/#{hostname}.json --override-runlist recipe[#{$recipe_to_apply}]"
+    node.run_as_root "chef-solo -c #{node.path}/#{Chake.chef_config} #{chef_logging} -j #{node.path}/#{Chake.tmpdir}/#{hostname}.json --override-runlist recipe[#{$recipe_to_apply}]"
   end
   task "apply:#{hostname}" => converge_dependencies
 
@@ -295,24 +286,24 @@ task :recipe_input, :recipe do |task,args|
 end
 
 desc "upload to all nodes"
-multitask :upload => $nodes.map { |node| "upload:#{node.hostname}" }
+multitask :upload => Chake.nodes.map { |node| "upload:#{node.hostname}" }
 
 desc "bootstrap all nodes"
-multitask :bootstrap => $nodes.map { |node| "bootstrap:#{node.hostname}" }
+multitask :bootstrap => Chake.nodes.map { |node| "bootstrap:#{node.hostname}" }
 
 desc "converge all nodes (default)"
-multitask "converge" => $nodes.map { |node| "converge:#{node.hostname}" }
+multitask "converge" => Chake.nodes.map { |node| "converge:#{node.hostname}" }
 
 desc "Apply <recipe> on all nodes"
-multitask "apply", [:recipe] => $nodes.map { |node| "apply:#{node.hostname}" }
+multitask "apply", [:recipe] => Chake.nodes.map { |node| "apply:#{node.hostname}" }
 
 desc "run <command> on all nodes"
-multitask :run, [:command] => $nodes.map { |node| "run:#{node.hostname}" }
+multitask :run, [:command] => Chake.nodes.map { |node| "run:#{node.hostname}" }
 
 task :default => :converge
 
 desc 'checks connectivity and setup on all nodes'
-multitask :check => ($nodes.map { |node| "check:#{node.hostname}" }) do
+multitask :check => (Chake.nodes.map { |node| "check:#{node.hostname}" }) do
   puts "✓ all hosts OK"
   puts "  - ssh connection works"
   puts "  - password-less sudo works"
@@ -326,7 +317,7 @@ task :console do
 
   puts 'chake - interactive console'
   puts '---------------------------'
-  puts 'all node data in available in $nodes'
+  puts 'all node data in available in Chake.nodes'
   puts
   IRB::Irb.new(workspace).run(IRB.conf)
 end
