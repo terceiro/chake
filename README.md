@@ -296,6 +296,20 @@ local://laptop:
 When you run `rake converge` on `desktop`, `laptop` will be skipped, and
 vice-versa.
 
+### Accessing node data from your own tasks
+
+It's often useful to be able to run arbitrary commands against the data you
+have about nodes. You can use the `Chake.nodes` for that. For example, if you
+want to geolocate each of yours hosts:
+
+```ruby
+task :geolocate do
+  Chake.nodes.each do |node|
+    puts "#{node.hostname}: %s" % `geoiplookup #{node.hostname}`.strip
+  end
+end
+```
+
 ## Environment variables
 
 * `$CHAKE_SSH_CONFIG`:
