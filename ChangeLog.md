@@ -1,3 +1,11 @@
+# 0.20
+
+* check: give some feedback by running `sudo echo OK` instead of `sudo true`
+* Get rid of global variables
+* bin/chake: make rake run one thread for each node
+* Chake::Backend: run commands by opening a shell and writing to it
+* Document Chake.nodes
+
 # 0.19
 
 * Protect node JSON files from other users
