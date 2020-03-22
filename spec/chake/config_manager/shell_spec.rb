@@ -29,13 +29,13 @@ describe Chake::ConfigManager::Shell do |c|
 
   it 'hides output on converge in silent mode' do
     node.data['shell'] = ['date']
-    expect(node).to receive(:run_as_root).with("sh -xec 'date' >/dev/null")
+    expect(node).to receive(:run_as_root).with("sh -ec 'date' >/dev/null")
     subject.converge(true)
   end
 
   it 'hides output on apply in silent mode' do
     node.data['shell'] = ['date']
-    expect(node).to receive(:run_as_root).with("sh -xec 'reboot' >/dev/null")
+    expect(node).to receive(:run_as_root).with("sh -ec 'reboot' >/dev/null")
     subject.apply("reboot", true)
   end
 end

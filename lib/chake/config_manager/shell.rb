@@ -7,11 +7,11 @@ module Chake
 
       def converge(silent = false)
         commands = node.data['shell'].join(' && ')
-        run("sh -xec '#{commands}'", silent)
+        node.run_as_root sh(commands, silent)
       end
 
       def apply(config, silent = false)
-        run("sh -xec '#{config}'", silent)
+        node.run_as_root sh(config, silent)
       end
 
       def self.accept?(node)
@@ -20,8 +20,12 @@ module Chake
 
       private
 
-      def logging(silent)
-        silent ? " >/dev/null" : ''
+      def sh(command, silent)
+        if silent
+          "sh -ec '#{command}' >/dev/null"
+        else
+          "sh -xec '#{command}'"
+        end
       end
 
       def run(cmd, silent)
