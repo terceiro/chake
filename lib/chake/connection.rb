@@ -23,7 +23,7 @@ module Chake
 
     def run(cmd)
       printf "%#{Node.max_node_name_length}s: $ %s\n", node.hostname, cmd
-      io = IO.popen(command_runner + ['/bin/sh'], mode='w+', eer: [:child, :out])
+      io = IO.popen(command_runner + ['/bin/sh'], mode='w+', err: [:child, :out])
       io.write(cmd)
       io.close_write
       io.each_line do |line|
