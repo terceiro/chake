@@ -142,30 +142,24 @@ task :connect_common
 Chake.nodes.each do |node|
 
   hostname = node.hostname
-  bootstrap_script = File.join(Chake.tmpdir, 'bootstrap-' + hostname)
+
+  bootstrap_script = File.join(Chake.tmpdir, hostname + ".bootstrap")
 
   bootstrap_steps = node.bootstrap_steps
 
-  file bootstrap_script => bootstrap_steps do |t|
-    mkdir_p(File.dirname(bootstrap_script))
-    File.open(t.name, 'w') do |f|
-      f.puts '#!/bin/sh'
-      f.puts 'set -eu'
-      bootstrap_steps.each do |platform|
-        f.puts(File.read(platform))
-      end
-    end
-    chmod 0755, t.name
-  end
+  bootstrap_code = (["#!/bin/sh\n","set -eu\n"] + bootstrap_steps.map { |f| File.read(f) }).join
 
   desc "bootstrap #{hostname}"
-  task "bootstrap:#{hostname}" => [:bootstrap_common, bootstrap_script] do
-    config = File.join(Chake.tmpdir, hostname + '.json')
+  task "bootstrap:#{hostname}" => :bootstrap_common do
+    if !File.exists?(bootstrap_script) || File.read(bootstrap_script) != bootstrap_code
+      mkdir_p Chake.tmpdir
 
-    if File.exists?(config)
-      # already bootstrapped, just overwrite
-      write_json_file(config, node.data)
-    else
+      # create bootstrap script
+      File.open(bootstrap_script, 'w') do |f|
+        f.write(bootstrap_code)
+      end
+      chmod 0755, bootstrap_script
+
       # copy bootstrap script over
       scp = node.scp
       target = "/tmp/.chake-bootstrap.#{Etc.getpwuid.name}"
@@ -173,12 +167,11 @@ Chake.nodes.each do |node|
 
       # run bootstrap script
       node.run_as_root("#{target} #{hostname}")
-
-      # overwrite config with current contents
-      mkdir_p File.dirname(config)
-      write_json_file(config, node.data)
     end
 
+    # overwrite config with current contents
+    config = File.join(Chake.tmpdir, hostname + '.json')
+    write_json_file(config, node.data)
   end
 
   desc "upload data to #{hostname}"
