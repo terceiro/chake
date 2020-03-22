@@ -1,7 +1,8 @@
 begin
   require 'simplecov'
   SimpleCov.start do
-    minimum_coverage 91
+    minimum_coverage 32.1
+    track_files 'lib/**/*.rb'
     add_filter %r{^/spec/}
   end
 rescue LoadError
