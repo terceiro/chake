@@ -21,6 +21,12 @@ module Chake
       self.class.name.split('::').last.downcase
     end
 
+    def bootstrap_steps
+      base = File.join(File.absolute_path(File.dirname(__FILE__)), 'bootstrap')
+      steps = Dir[File.join(base, '*.sh')] + Dir[File.join(base, name, '*.sh')]
+      steps.sort_by { |f| File.basename(f) }
+    end
+
     def self.inherited(klass)
       @subclasses ||= []
       @subclasses << klass

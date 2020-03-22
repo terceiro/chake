@@ -7,4 +7,12 @@ describe Chake::ConfigManager do
     allow(subject).to receive(:name).and_return("xyz")
     expect(subject.path).to eq("/var/tmp/xyz.user")
   end
+
+  it 'provides bootstrap scripts' do
+    bootstrap_steps = subject.bootstrap_steps
+    expect(bootstrap_steps).to_not be_empty
+    bootstrap_steps.each do |path|
+      expect(Pathname(path)).to exist
+    end
+  end
 end

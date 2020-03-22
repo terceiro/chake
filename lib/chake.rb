@@ -122,8 +122,6 @@ def write_json_file(file, data)
   end
 end
 
-bootstrap_steps = Dir.glob(File.expand_path('chake/bootstrap/*.sh', File.dirname(__FILE__))).sort
-
 desc 'Executed before bootstrapping'
 task :bootstrap_common => :connect_common
 
@@ -140,6 +138,8 @@ Chake.nodes.each do |node|
 
   hostname = node.hostname
   bootstrap_script = File.join(Chake.tmpdir, 'bootstrap-' + hostname)
+
+  bootstrap_steps = node.bootstrap_steps
 
   file bootstrap_script => bootstrap_steps do |t|
     mkdir_p(File.dirname(bootstrap_script))

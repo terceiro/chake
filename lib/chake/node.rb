@@ -58,7 +58,7 @@ module Chake
       @config_manager ||= Chake::ConfigManager.get(self)
     end
 
-    def_delegators :config_manager, :converge, :apply, :path
+    def_delegators :config_manager, :converge, :apply, :path, :bootstrap_steps
 
     def path
       @path ||= config_manager.path
