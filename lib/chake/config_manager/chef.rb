@@ -14,9 +14,10 @@ module Chake
         node.run_as_root "sh -c 'rm -f #{node.path}/nodes/*.json && chef-solo -c #{node.path}/#{CONFIG} #{logging(silent)} -j #{json_config} --override-runlist recipe[#{config}]'"
       end
 
+      priority 99
+
       def self.accept?(node)
-        # FIXME check for something when there is more than one configuration manager
-        true
+        true # this is the default, but after everything else
       end
 
       private

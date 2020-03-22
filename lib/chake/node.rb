@@ -54,7 +54,6 @@ module Chake
     def_delegators :connection, :run, :run_as_root, :run_shell, :rsync, :rsync_dest, :scp, :scp_dest, :skip?
 
     def config_manager
-      # FIXME select based on node data
       @config_manager ||= Chake::ConfigManager.get(self)
     end
 

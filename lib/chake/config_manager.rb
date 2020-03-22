@@ -35,14 +35,20 @@ module Chake
       name.split('::').last.downcase
     end
 
+    def self.priority(n = nil)
+      @priority ||= n || 50
+    end
+
     def self.inherited(klass)
       @subclasses ||= []
       @subclasses << klass
     end
 
     def self.get(node)
-      manager = @subclasses.find { |c| c.accept?(node) }
-      raise ArgumentError.new("Can't find configuration manager class for node #{node.hostname}. Available: #{@subclasses.map(&:short_name).join(', ')}") unless manager
+      available = @subclasses.sort_by(&:priority)
+      manager = available.find { |c| c.short_name == node.data["config_manager"] }
+      manager ||= available.find { |c| c.accept?(node) }
+      raise ArgumentError.new("Can't find configuration manager class for node #{node.hostname}. Available: #{available}.join(', ')}") unless manager
       manager.new(node)
     end
 
