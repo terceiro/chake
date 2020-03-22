@@ -17,6 +17,8 @@ module Chake
     attr_reader :remote_username
     attr_reader :data
 
+    attr_accessor :silent
+
     def self.max_node_name_length
       @max_node_name_length ||= 0
     end

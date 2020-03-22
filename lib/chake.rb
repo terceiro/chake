@@ -141,6 +141,8 @@ task :connect_common
 
 Chake.nodes.each do |node|
 
+  node.silent = Rake.application.options.silent
+
   hostname = node.hostname
 
   bootstrap_script = File.join(Chake.tmpdir, hostname + ".bootstrap")
@@ -214,12 +216,12 @@ Chake.nodes.each do |node|
 
   desc "converge #{hostname}"
   task "converge:#{hostname}" => converge_dependencies do
-    node.converge(Rake.application.options.silent)
+    node.converge
   end
 
   desc 'apply <recipe> on #{hostname}'
   task "apply:#{hostname}", [:recipe] => [:recipe_input, :connect_common] do |task, args|
-    node.apply($recipe_to_apply, Rake.application.options.silent)
+    node.apply($recipe_to_apply)
   end
   task "apply:#{hostname}" => converge_dependencies
 

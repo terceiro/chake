@@ -5,13 +5,13 @@ module Chake
   class ConfigManager
     class Shell < ConfigManager
 
-      def converge(silent = false)
+      def converge
         commands = node.data['shell'].join(' && ')
-        node.run_as_root sh(commands, silent)
+        node.run_as_root sh(commands)
       end
 
-      def apply(config, silent = false)
-        node.run_as_root sh(config, silent)
+      def apply(config)
+        node.run_as_root sh(config)
       end
 
       def self.accept?(node)
@@ -20,16 +20,12 @@ module Chake
 
       private
 
-      def sh(command, silent)
-        if silent
+      def sh(command)
+        if node.silent
           "sh -ec '#{command}' >/dev/null"
         else
           "sh -xec '#{command}'"
         end
-      end
-
-      def run(cmd, silent)
-        node.run_as_root cmd + logging(silent)
       end
     end
   end

@@ -7,10 +7,10 @@ module Chake
       @node = node
     end
 
-    def converge(silent = false)
+    def converge
     end
 
-    def apply(config, silent = false)
+    def apply(config)
     end
 
     def path

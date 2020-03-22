@@ -6,12 +6,12 @@ module Chake
 
       CONFIG = ENV['CHAKE_CHEF_CONFIG'] || 'config.rb'
 
-      def converge(silent = false)
-        node.run_as_root "sh -c 'rm -f #{node.path}/nodes/*.json && chef-solo -c #{node.path}/#{CONFIG} #{logging(silent)} -j #{json_config}'"
+      def converge
+        node.run_as_root "sh -c 'rm -f #{node.path}/nodes/*.json && chef-solo -c #{node.path}/#{CONFIG} #{logging} -j #{json_config}'"
       end
 
-      def apply(config, silent = false)
-        node.run_as_root "sh -c 'rm -f #{node.path}/nodes/*.json && chef-solo -c #{node.path}/#{CONFIG} #{logging(silent)} -j #{json_config} --override-runlist recipe[#{config}]'"
+      def apply(config)
+        node.run_as_root "sh -c 'rm -f #{node.path}/nodes/*.json && chef-solo -c #{node.path}/#{CONFIG} #{logging} -j #{json_config} --override-runlist recipe[#{config}]'"
       end
 
       priority 99
@@ -27,8 +27,8 @@ module Chake
         File.join(parts)
       end
 
-      def logging(silent)
-        silent && '-l fatal' || ''
+      def logging
+        node.silent && '-l fatal' || ''
       end
     end
   end
