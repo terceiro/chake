@@ -76,8 +76,13 @@ end
 
 desc 'list nodes'
 task :nodes do
-  Chake.nodes.each do |node|
-    puts "%-40s %-5s\n" % [node.hostname, node.connection]
+  fields = [:hostname, :connection, :config_manager]
+  IO.popen(['column', '-t'], mode: "w") do |table|
+    table.puts(fields.join(' '))
+    table.puts(fields.map { |f| '-' * f.length }.join(' '))
+    Chake.nodes.each do |node|
+      table.puts fields.map { |f| node.send(f) }.join(' ')
+    end
   end
 end
 

@@ -18,13 +18,21 @@ module Chake
     end
 
     def name
-      self.class.name.split('::').last.downcase
+      self.class.short_name
+    end
+
+    def to_s
+      name
     end
 
     def bootstrap_steps
       base = File.join(File.absolute_path(File.dirname(__FILE__)), 'bootstrap')
       steps = Dir[File.join(base, '*.sh')] + Dir[File.join(base, name, '*.sh')]
       steps.sort_by { |f| File.basename(f) }
+    end
+
+    def self.short_name
+      name.split('::').last.downcase
     end
 
     def self.inherited(klass)
@@ -34,7 +42,7 @@ module Chake
 
     def self.get(node)
       manager = @subclasses.find { |c| c.accept?(node) }
-      raise ArgumentError.new("Can't find configuration manager class for node #{node.hostname}. Available: #{@subclasses.map(&:name).join(', ')}") unless manager
+      raise ArgumentError.new("Can't find configuration manager class for node #{node.hostname}. Available: #{@subclasses.map(&:short_name).join(', ')}") unless manager
       manager.new(node)
     end
 
