@@ -34,6 +34,7 @@ EOF
   end
 
 
+  # FIXME this is chef-specific
   if File.exists?('config.rb')
     puts '[exists] config.rb'
   else
@@ -215,14 +216,12 @@ Chake.nodes.each do |node|
 
   desc "converge #{hostname}"
   task "converge:#{hostname}" => converge_dependencies do
-    chef_logging = Rake.application.options.silent && '-l fatal' || ''
-    node.run_as_root "sh -c 'rm -f #{node.path}/nodes/*.json && chef-solo -c #{node.path}/#{Chake.chef_config} #{chef_logging} -j #{node.path}/#{Chake.tmpdir}/#{hostname}.json'"
+    node.converge(Rake.application.options.silent)
   end
 
   desc 'apply <recipe> on #{hostname}'
   task "apply:#{hostname}", [:recipe] => [:recipe_input, :connect_common] do |task, args|
-    chef_logging = Rake.application.options.silent && '-l fatal' || ''
-    node.run_as_root "sh -c 'rm -f #{node.path}/nodes/*.json && chef-solo -c #{node.path}/#{Chake.chef_config} #{chef_logging} -j #{node.path}/#{Chake.tmpdir}/#{hostname}.json --override-runlist recipe[#{$recipe_to_apply}]'"
+    node.apply($recipe_to_apply, Rake.application.options.silent)
   end
   task "apply:#{hostname}" => converge_dependencies
 

@@ -14,8 +14,9 @@ describe Chake::Node do
   it('user current username by default') {
     expect(simple.username).to eq('jonhdoe')
   }
-  it('writes to /var/tmp/chef.$username') {
-    expect(simple.path).to eq('/var/tmp/chef.jonhdoe')
+  it('writes to specified path') {
+    node = Chake::Node.new("ssh://host.tld/path/to/config")
+    expect(node.path).to eq("/path/to/config")
   }
 
   let(:with_username) { Chake::Node.new('username@hostname') }
@@ -57,5 +58,22 @@ describe Chake::Node do
       node.send(method, args)
     end
   end
+
+  it "delegates converge to config_manager" do
+    node = simple
+    expect(node.config_manager).to receive(:converge)
+    node.converge
+  end
+
+  it "delegates apply to config_manager" do
+    node = simple
+    expect(node.config_manager).to receive(:apply).with("myrecipe")
+    node.apply("myrecipe")
+  end
+
+  it 'falls back to writing to path specified by config manager' do
+    expect(simple.path).to eq(simple.config_manager.path)
+  end
+
 
 end

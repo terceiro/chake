@@ -4,11 +4,11 @@ describe Chake::Connection::Ssh do
 
   include_examples "Chake::Connection", Chake::Connection::Ssh
 
-  let(:node) { Chake::Node.new('ssh://myuser@myhost/srv/chef') }
+  let(:node) { Chake::Node.new('ssh://myuser@myhost/srv/chake') }
 
   it('runs commands with ssh') { expect(connection.command_runner).to eq(['ssh', 'myuser@myhost']) }
 
-  it('rsyncs over ssh') { expect(connection.rsync_dest).to eq('myuser@myhost:/srv/chef/') }
+  it('rsyncs over ssh') { expect(connection.rsync_dest).to eq('myuser@myhost:/srv/chake/') }
 
   it 'uses no remote username if none was passed' do
     node = Chake::Node.new('theserver')
