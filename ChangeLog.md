@@ -1,3 +1,7 @@
+# 0.21
+
+* converge, apply: allow removing data from the node JSON attributes
+
 # 0.20
 
 * check: give some feedback by running `sudo echo OK` instead of `sudo true`
