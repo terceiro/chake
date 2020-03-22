@@ -201,10 +201,10 @@ is the simplest form of specifying your nodes. Here are all the components of
 the node URLs:
 
 ```
-[backend://][username@]hostname[:port][/path]
+[connection://][username@]hostname[:port][/path]
 ```
 
-* `backend`: backend to use to connect to the host. `ssh` or `local` (default: `ssh`)
+* `connection`: what to use to connect to the host. `ssh` or `local` (default: `ssh`)
 * `username`: user name to connect with (default: the username on your local workstation)
 * `hostname`: the hostname to connect to (default: _none_)
 * `port`: port number to connect to (default: 22)
@@ -281,7 +281,7 @@ To apply the configuration to the local host, you can use the conventional
 `rake converge:thunderbolt`, or the special target `rake local`.
 
 When converging all nodes, `chake` will skip nodes that are declared with the
-`local://` backend and whose hostname does not match the hostname  in the
+`local://` connection and whose hostname does not match the hostname  in the
 declaration. For example:
 
 ```yaml

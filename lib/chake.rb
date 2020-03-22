@@ -76,7 +76,7 @@ end
 desc 'list nodes'
 task :nodes do
   Chake.nodes.each do |node|
-    puts "%-40s %-5s\n" % [node.hostname, node.backend]
+    puts "%-40s %-5s\n" % [node.hostname, node.connection]
   end
 end
 

@@ -1,6 +1,6 @@
 module Chake
 
-  class Backend < Struct.new(:node)
+  class Connection < Struct.new(:node)
 
     class CommandFailed < Exception
     end
@@ -51,30 +51,30 @@ module Chake
     end
 
     def to_s
-      self.class.backend_name
+      self.class.connection_name
     end
 
     def skip?
       false
     end
 
-    def self.backend_name
+    def self.connection_name
       name.split("::").last.downcase
     end
 
     def self.inherited(subclass)
-      @backends ||= []
-      @backends << subclass
+      @connections ||= []
+      @connections << subclass
     end
 
     def self.get(name)
-      backend = @backends.find { |b| b.backend_name == name }
-      backend || raise(ArgumentError.new("Invalid backend name: #{name}"))
+      connection = @connections.find { |b| b.connection_name == name }
+      connection || raise(ArgumentError.new("Invalid connection name: #{name}"))
     end
 
   end
 
 end
 
-require 'chake/backend/ssh'
-require 'chake/backend/local'
+require 'chake/connection/ssh'
+require 'chake/connection/local'

@@ -2,7 +2,7 @@ require 'uri'
 require 'etc'
 require 'forwardable'
 
-require 'chake/backend'
+require 'chake/connection'
 
 module Chake
 
@@ -33,7 +33,7 @@ module Chake
         uri.path = nil
       end
 
-      @backend_name = uri.scheme
+      @connection_name = uri.scheme
 
       @hostname = uri.host
       @port = uri.port
@@ -47,11 +47,11 @@ module Chake
       end
     end
 
-    def backend
-      @backend ||= Chake::Backend.get(@backend_name).new(self)
+    def connection
+      @connection ||= Chake::Connection.get(@connection_name).new(self)
     end
 
-    def_delegators :backend, :run, :run_as_root, :run_shell, :rsync, :rsync_dest, :scp, :scp_dest, :skip?
+    def_delegators :connection, :run, :run_as_root, :run_shell, :rsync, :rsync_dest, :scp, :scp_dest, :skip?
 
   end
 

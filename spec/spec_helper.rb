@@ -6,7 +6,7 @@ rescue LoadError
 end
 
 require 'chake/node'
-require 'chake/backend'
+require 'chake/connection'
 
 require 'rspec/version'
 if RSpec::Version::STRING < '2.14'
@@ -14,30 +14,30 @@ if RSpec::Version::STRING < '2.14'
   exit
 end
 
-shared_examples "Chake::Backend" do |backend_class|
+shared_examples "Chake::Connection" do |connection_class|
 
-  let(:backend) { backend_class.new(node) }
+  let(:connection) { connection_class.new(node) }
 
   it('runs commands') do
     io = StringIO.new("line 1\nline 2\n")
-    expect(IO).to receive(:popen).with(backend.command_runner + ['/bin/sh'], mode='w+', Hash).and_return(io)
+    expect(IO).to receive(:popen).with(connection.command_runner + ['/bin/sh'], mode='w+', Hash).and_return(io)
     expect(io).to receive(:write).with('something').ordered
     expect(io).to receive(:close_write).ordered
-    expect(backend).to receive(:printf).with(anything, "myhost", "something")
-    expect(backend).to receive(:printf).with(anything, "myhost", "line 1")
-    expect(backend).to receive(:printf).with(anything, "myhost", "line 2")
-    backend.run('something')
+    expect(connection).to receive(:printf).with(anything, "myhost", "something")
+    expect(connection).to receive(:printf).with(anything, "myhost", "line 1")
+    expect(connection).to receive(:printf).with(anything, "myhost", "line 2")
+    connection.run('something')
   end
 
   it('runs as root') do
-    expect(backend).to receive(:run).with('sudo something')
-    backend.run_as_root('something')
+    expect(connection).to receive(:run).with('sudo something')
+    connection.run_as_root('something')
   end
 
   it('does not use sudo if already root') do
-    allow(backend.node).to receive(:remote_username).and_return('root')
-    expect(backend).to receive(:run).with('something')
-    backend.run_as_root('something')
+    allow(connection.node).to receive(:remote_username).and_return('root')
+    expect(connection).to receive(:run).with('something')
+    connection.run_as_root('something')
   end
 
 end

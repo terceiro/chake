@@ -1,2 +1,2 @@
-require 'chake/backend'
+require 'chake/connection'
 

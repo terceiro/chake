@@ -1,8 +1,8 @@
 module Chake
 
-  class Backend
+  class Connection
 
-    class Ssh < Backend
+    class Ssh < Connection
 
       def scp
         ['scp', ssh_config, scp_options].flatten.compact

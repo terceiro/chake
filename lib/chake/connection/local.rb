@@ -2,9 +2,9 @@ require 'socket'
 
 module Chake
 
-  class Backend
+  class Connection
 
-    class Local < Backend
+    class Local < Connection
 
       def command_runner
         ['sh', '-c']

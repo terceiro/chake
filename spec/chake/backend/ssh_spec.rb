@@ -1,14 +1,14 @@
 require 'spec_helper'
 
-describe Chake::Backend::Ssh do
+describe Chake::Connection::Ssh do
 
-  include_examples "Chake::Backend", Chake::Backend::Ssh
+  include_examples "Chake::Connection", Chake::Connection::Ssh
 
   let(:node) { Chake::Node.new('ssh://myuser@myhost/srv/chef') }
 
-  it('runs commands with ssh') { expect(backend.command_runner).to eq(['ssh', 'myuser@myhost']) }
+  it('runs commands with ssh') { expect(connection.command_runner).to eq(['ssh', 'myuser@myhost']) }
 
-  it('rsyncs over ssh') { expect(backend.rsync_dest).to eq('myuser@myhost:/srv/chef/') }
+  it('rsyncs over ssh') { expect(connection.rsync_dest).to eq('myuser@myhost:/srv/chef/') }
 
   it 'uses no remote username if none was passed' do
     node = Chake::Node.new('theserver')
@@ -24,13 +24,13 @@ describe Chake::Backend::Ssh do
   context 'with a custom port' do
     let(:node) { Chake::Node.new('ssh://myhost:2222') }
     it 'uses port with ssh' do
-      expect(backend.command_runner).to eq(['ssh', '-p', '2222', 'myhost'])
+      expect(connection.command_runner).to eq(['ssh', '-p', '2222', 'myhost'])
     end
     it 'uses port with scp' do
-      expect(backend.scp).to eq(['scp', '-P', '2222'])
+      expect(connection.scp).to eq(['scp', '-P', '2222'])
     end
     it 'uses port with rsync' do
-      expect(backend.send(:rsync_ssh)).to eq(['-e', 'ssh -p 2222'])
+      expect(connection.send(:rsync_ssh)).to eq(['-e', 'ssh -p 2222'])
     end
   end
 
