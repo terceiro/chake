@@ -1,3 +1,4 @@
+require 'pathname'
 require 'chake/node'
 require 'chake/config_manager'
 
