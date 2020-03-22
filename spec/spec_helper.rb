@@ -1,7 +1,7 @@
 begin
   require 'simplecov'
   SimpleCov.start do
-    minimum_coverage 32.1
+    minimum_coverage 35.3
     track_files 'lib/**/*.rb'
     add_filter %r{^/spec/}
   end
