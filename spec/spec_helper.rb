@@ -1,6 +1,9 @@
 begin
   require 'simplecov'
-  SimpleCov.start
+  SimpleCov.start do
+    minimum_coverage 91
+    add_filter %r{^/spec/}
+  end
 rescue LoadError
   puts "W: simplecov not installed, we won't have a coverage report"
 end
