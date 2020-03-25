@@ -23,7 +23,7 @@ shared_examples 'Chake::Connection' do |connection_class|
 
   it('runs commands') do
     io = StringIO.new("line 1\nline 2\n")
-    expect(IO).to receive(:popen).with(connection.command_runner + ['/bin/sh'], mode = 'w+', Hash).and_return(io)
+    expect(IO).to receive(:popen).with(connection.command_runner + ['/bin/sh'], 'w+', Hash).and_return(io)
     expect(io).to receive(:write).with('something').ordered
     expect(io).to receive(:close_write).ordered
     expect(connection).to receive(:printf).with(anything, 'myhost', 'something')
