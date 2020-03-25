@@ -49,11 +49,6 @@ Style/ClassAndModuleChildren:
 Style/FormatStringToken:
   EnforcedStyle: unannotated
 
-# Offense count: 1
-Style/StructInheritance:
-  Exclude:
-    - 'lib/chake/connection.rb'
-
 # Offense count: 38
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
 # URISchemes: http, https
