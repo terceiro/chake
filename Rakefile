@@ -83,4 +83,9 @@ end
 desc 'Makes a release'
 task release: [:check_tag, :check_changelog, :test, 'bundler:release']
 
-task default: :test
+desc 'Check coding style'
+task :style do
+  sh 'rubocop'
+end
+
+task default: [:test, :style]
