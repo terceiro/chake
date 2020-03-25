@@ -73,4 +73,12 @@ describe Chake::Node do
   it 'falls back to writing to path specified by config manager' do
     expect(simple.path).to eq(simple.config_manager.path)
   end
+
+  it 'calculates max node name length' do
+    Chake::Node.max_node_name_length = 0
+    Chake::Node.new('foobar')
+    expect(Chake::Node.max_node_name_length).to eq(6)
+    Chake::Node.new('foobarbaz')
+    expect(Chake::Node.max_node_name_length).to eq(9)
+  end
 end
