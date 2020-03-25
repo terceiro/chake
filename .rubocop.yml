@@ -13,6 +13,12 @@ Style/IfUnlessModifier:
 Style/GuardClause:
   Enabled: false
 
+Style/FormatString:
+  EnforcedStyle: percent
+
+Style/SymbolArray:
+  Enabled: false
+
 Metrics/BlockLength:
   Enabled: false
 
