@@ -26,9 +26,9 @@ shared_examples 'Chake::Connection' do |connection_class|
     expect(IO).to receive(:popen).with(connection.command_runner + ['/bin/sh'], 'w+', Hash).and_return(io)
     expect(io).to receive(:write).with('something').ordered
     expect(io).to receive(:close_write).ordered
-    expect(connection).to receive(:printf).with(anything, 'myhost', 'something')
-    expect(connection).to receive(:printf).with(anything, 'myhost', 'line 1')
-    expect(connection).to receive(:printf).with(anything, 'myhost', 'line 2')
+    expect(node).to receive(:log).with('$ something')
+    expect(node).to receive(:log).with('line 1')
+    expect(node).to receive(:log).with('line 2')
     connection.run('something')
   end
 

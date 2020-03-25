@@ -20,18 +20,18 @@ module Chake
     end
 
     def run(cmd)
-      printf("%#{Node.max_node_name_length}s: $ %s\n", node.hostname, cmd) unless node.silent
+      node.log('$ %<command>s' % { command: cmd })
       io = IO.popen(command_runner + ['/bin/sh'], 'w+', err: %i[child out])
       io.write(cmd)
       io.close_write
       io.each_line do |line|
-        printf "%#{Node.max_node_name_length}s: %s\n", node.hostname, line.strip
+        node.log(line.strip)
       end
       io.close
       if $CHILD_STATUS
         status = $CHILD_STATUS.exitstatus
         if status != 0
-          raise CommandFailed, [node.hostname, format('FAILED with exit status %d', status)].join(': ')
+          raise CommandFailed, [node.hostname, 'FAILED with exit status %Mstatus>d' % { status: status }].join(': ')
         end
       end
     end

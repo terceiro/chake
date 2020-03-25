@@ -61,5 +61,10 @@ module Chake
     def path
       @path ||= config_manager.path
     end
+
+    def log(msg)
+      return if silent
+      puts("%#{Node.max_node_name_length}<host>s: %<msg>s\n" % { host: hostname, msg: msg })
+    end
   end
 end
