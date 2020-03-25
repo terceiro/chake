@@ -311,7 +311,7 @@ end
 desc 'runs a Ruby console in the chake environment'
 task :console do
   require 'irb'
-  IRB.setup(eval("__FILE__"), argv: [])
+  IRB.setup('__FILE__', argv: [])
   workspace = IRB::WorkSpace.new(self)
 
   puts 'chake - interactive console'
