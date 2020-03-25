@@ -4,11 +4,8 @@ require 'readline'
 require 'chake/tmpdir'
 
 module Chake
-
   class Readline
-
     class << self
-
       def history_file
         raise NotImplementedError
       end
@@ -22,7 +19,7 @@ module Chake
       end
 
       def init
-        return if !File.exists?(history_file)
+        return unless File.exist?(history_file)
         @history = File.readlines(history_file).map(&:strip)
       end
 
@@ -41,18 +38,16 @@ module Chake
           ::Readline::HISTORY.push(cmd)
         end
         input = ::Readline.readline(prompt)
-        if input && input.strip != '' && input != @last
-          history.push(input)
-        end
+        history.push(input) if input && input.strip != '' && input != @last
         input
       end
-
     end
 
     class Commands < Readline
       def self.history_file
         File.join(Chake.tmpdir, '.commands_history')
       end
+
       def self.prompt
         '$ '
       end
@@ -62,13 +57,12 @@ module Chake
       def self.history_file
         File.join(Chake.tmpdir, '.recipes_history')
       end
+
       def self.prompt
         '> '
       end
     end
-
   end
-
 end
 
 Chake::Readline.constants.each do |subclass|

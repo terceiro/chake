@@ -1,9 +1,6 @@
 module Chake
-
   class Connection
-
     class Ssh < Connection
-
       def scp
         ['scp', ssh_config, scp_options].flatten.compact
       end
@@ -35,11 +32,9 @@ module Chake
           begin
             ssh_command = 'ssh'
             if File.exist?(ssh_config_file)
-              ssh_command +=  ' -F ' + ssh_config_file
+              ssh_command += ' -F ' + ssh_config_file
             end
-            if node.port
-              ssh_command += ' -p ' + node.port.to_s
-            end
+            ssh_command += ' -p ' + node.port.to_s if node.port
             if ssh_command == 'ssh'
               []
             else
@@ -71,9 +66,6 @@ module Chake
       def scp_options
         node.port && ['-P', node.port.to_s] || []
       end
-
     end
-
   end
-
 end

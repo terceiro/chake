@@ -1,5 +1,3 @@
-# encoding: UTF-8
-
 require 'yaml'
 require 'json'
 require 'tmpdir'
@@ -9,10 +7,9 @@ require 'chake/version'
 require 'chake/readline'
 require 'chake/tmpdir'
 
-
-desc "Initializes current directory with sample structure"
+desc 'Initializes current directory with sample structure'
 task :init do
-  if File.exists?('nodes.yaml')
+  if File.exist?('nodes.yaml')
     puts '[exists] nodes.yaml'
   else
     File.open('nodes.yaml', 'w') do |f|
@@ -22,7 +19,7 @@ host1.mycompany.com:
     - recipe[basics]
 EOF
       f.write(sample_nodes)
-      puts "[create] nodes.yaml"
+      puts '[create] nodes.yaml'
     end
   end
 
@@ -33,30 +30,29 @@ EOF
     puts '[ mkdir] nodes.d/'
   end
 
-
-  # FIXME this is chef-specific
-  if File.exists?('config.rb')
+  # FIXME: this is chef-specific
+  if File.exist?('config.rb')
     puts '[exists] config.rb'
   else
     File.open('config.rb', 'w') do |f|
-      f.puts "root = File.expand_path(File.dirname(__FILE__))"
+      f.puts 'root = File.expand_path(File.dirname(__FILE__))'
       f.puts "file_cache_path   root + '/cache'"
       f.puts "cookbook_path     root + '/cookbooks'"
       f.puts "role_path         root + '/config/roles'"
     end
-    puts "[create] config.rb"
+    puts '[create] config.rb'
   end
 
-  if !File.exist?('config/roles')
+  unless File.exist?('config/roles')
     FileUtils.mkdir_p 'config/roles'
-    puts  '[ mkdir] config/roles'
+    puts '[ mkdir] config/roles'
   end
-  if !File.exist?('cookbooks/basics/recipes')
+  unless File.exist?('cookbooks/basics/recipes')
     FileUtils.mkdir_p 'cookbooks/basics/recipes/'
-    puts  '[ mkdir] cookbooks/basics/recipes/'
+    puts '[ mkdir] cookbooks/basics/recipes/'
   end
   recipe = 'cookbooks/basics/recipes/default.rb'
-  if File.exists?(recipe)
+  if File.exist?(recipe)
     puts "[exists] #{recipe}"
   else
     File.open(recipe, 'w') do |f|
@@ -64,7 +60,7 @@ EOF
     end
     puts "[create] #{recipe}"
   end
-  if File.exists?('Rakefile')
+  if File.exist?('Rakefile')
     puts '[exists] Rakefile'
   else
     File.open('Rakefile', 'w') do |f|
@@ -76,8 +72,8 @@ end
 
 desc 'list nodes'
 task :nodes do
-  fields = [:hostname, :connection, :config_manager]
-  IO.popen(['column', '-t'], mode: "w") do |table|
+  fields = %i[hostname connection config_manager]
+  IO.popen(['column', '-t'], mode: 'w') do |table|
     table.puts(fields.join(' '))
     table.puts(fields.map { |f| '-' * f.length }.join(' '))
     Chake.nodes.each do |node|
@@ -87,80 +83,71 @@ task :nodes do
 end
 
 def encrypted_for(node)
-  encrypted_files = Dir.glob("**/files/{default,host-#{node}}/*.{asc,gpg}") + Dir.glob("**/files/*.{asc,gpg}")
-  encrypted_files.inject({}) do |hash, key|
+  encrypted_files = Dir.glob("**/files/{default,host-#{node}}/*.{asc,gpg}") + Dir.glob('**/files/*.{asc,gpg}')
+  encrypted_files.each_with_object({}) do |key, hash|
     hash[key] = key.sub(/\.(asc|gpg)$/, '')
-    hash
   end
 end
 
 def if_files_changed(node, group_name, files)
-  if files.empty?
-    return
-  end
-  hash_io = IO.popen(['xargs', 'sha1sum'], 'w+')
+  return if files.empty?
+  hash_io = IO.popen(%w[xargs sha1sum], 'w+')
   files.sort.each { |f| hash_io.puts(f) }
   hash_io.close_write
   current_hash = hash_io.read
 
   hash_file = File.join(Chake.tmpdir, node + '.' + group_name + '.sha1sum')
   hash_on_disk = nil
-  if File.exists?(hash_file)
-    hash_on_disk = File.read(hash_file)
-  end
+  hash_on_disk = File.read(hash_file) if File.exist?(hash_file)
 
-  if current_hash != hash_on_disk
-    yield
-  end
+  yield if current_hash != hash_on_disk
   FileUtils.mkdir_p(File.dirname(hash_file))
   File.open(hash_file, 'w') do |f|
     f.write(current_hash)
   end
 end
 
-
 def write_json_file(file, data)
-  File.chmod(0600, file) if File.exists?(file)
-  File.open(file, 'w', 0600) do |f|
+  File.chmod(0o600, file) if File.exist?(file)
+  File.open(file, 'w', 0o600) do |f|
     f.write(JSON.pretty_generate(data))
     f.write("\n")
   end
 end
 
 desc 'Executed before bootstrapping'
-task :bootstrap_common => :connect_common
+task bootstrap_common: :connect_common
 
 desc 'Executed before uploading'
-task :upload_common => :connect_common
+task upload_common: :connect_common
 
 desc 'Executed before uploading'
-task :converge_common => :connect_common
+task converge_common: :connect_common
 
 desc 'Executed before connecting to any host'
 task :connect_common
 
 Chake.nodes.each do |node|
-
   node.silent = Rake.application.options.silent
 
   hostname = node.hostname
 
-  bootstrap_script = File.join(Chake.tmpdir, hostname + ".bootstrap")
+  bootstrap_script = File.join(Chake.tmpdir, hostname + '.bootstrap')
 
   bootstrap_steps = node.bootstrap_steps
 
-  bootstrap_code = (["#!/bin/sh\n","set -eu\n"] + bootstrap_steps.map { |f| File.read(f) }).join
+  bootstrap_code = (["#!/bin/sh\n", "set -eu\n"] + bootstrap_steps.map { |f| File.read(f) }).join
 
   desc "bootstrap #{hostname}"
   task "bootstrap:#{hostname}" => :bootstrap_common do
-    if !File.exists?(bootstrap_script) || File.read(bootstrap_script) != bootstrap_code
+    if !File.exist?(bootstrap_script) || File.read(bootstrap_script) != bootstrap_code
       mkdir_p Chake.tmpdir
 
       # create bootstrap script
       File.open(bootstrap_script, 'w') do |f|
         f.write(bootstrap_code)
       end
-      chmod 0755, bootstrap_script
+      chmod 0o755, bootstrap_script
 
       # copy bootstrap script over
       scp = node.scp
@@ -179,17 +166,17 @@ Chake.nodes.each do |node|
   desc "upload data to #{hostname}"
   task "upload:#{hostname}" => :upload_common do
     encrypted = encrypted_for(hostname)
-    rsync_excludes = (encrypted.values + encrypted.keys).map { |f| ["--exclude", f] }.flatten
-    rsync_excludes << "--exclude" << ".git/"
-    rsync_excludes << "--exclude" << "cache/"
-    rsync_excludes << "--exclude" << "nodes/"
-    rsync_excludes << "--exclude" << "local-mode-cache/"
+    rsync_excludes = (encrypted.values + encrypted.keys).map { |f| ['--exclude', f] }.flatten
+    rsync_excludes << '--exclude' << '.git/'
+    rsync_excludes << '--exclude' << 'cache/'
+    rsync_excludes << '--exclude' << 'nodes/'
+    rsync_excludes << '--exclude' << 'local-mode-cache/'
 
-    rsync = node.rsync + ["-avp"] + ENV.fetch('CHAKE_RSYNC_OPTIONS', '').split
+    rsync = node.rsync + ['-avp'] + ENV.fetch('CHAKE_RSYNC_OPTIONS', '').split
     rsync_logging = Rake.application.options.silent && '--quiet' || '--verbose'
 
     hash_files = Dir.glob(File.join(Chake.tmpdir, '*.sha1sum'))
-    files = Dir.glob("**/*").select { |f| !File.directory?(f) } - encrypted.keys - encrypted.values - hash_files
+    files = Dir.glob('**/*').reject { |f| File.directory?(f) } - encrypted.keys - encrypted.values - hash_files
     if_files_changed(hostname, 'plain', files) do
       sh *rsync, '--delete', rsync_logging, *rsync_excludes, './', node.rsync_dest
     end
@@ -200,7 +187,7 @@ Chake.nodes.each do |node|
           target = File.join(tmpdir, target_file)
           mkdir_p(File.dirname(target))
           rm_f target
-          File.open(target, 'w', 0400) do |output|
+          File.open(target, 'w', 0o400) do |output|
             IO.popen(['gpg', '--quiet', '--batch', '--use-agent', '--decrypt', encrypted_file]) do |data|
               output.write(data.read)
             end
@@ -220,13 +207,13 @@ Chake.nodes.each do |node|
   end
 
   desc 'apply <recipe> on #{hostname}'
-  task "apply:#{hostname}", [:recipe] => [:recipe_input, :connect_common] do |task, args|
+  task "apply:#{hostname}", [:recipe] => %i[recipe_input connect_common] do |_task, _args|
     node.apply($recipe_to_apply)
   end
   task "apply:#{hostname}" => converge_dependencies
 
   desc "run a command on #{hostname}"
-  task "run:#{hostname}", [:command] => [:run_input, :connect_common] do
+  task "run:#{hostname}", [:command] => %i[run_input connect_common] do
     node.run($cmd_to_run)
   end
 
@@ -239,32 +226,31 @@ Chake.nodes.each do |node|
   task "check:#{hostname}" => :connect_common do
     node.run('sudo echo OK')
   end
-
 end
 
-task :run_input, :command do |task,args|
+task :run_input, :command do |_task, args|
   $cmd_to_run = args[:command]
-  if !$cmd_to_run
-    puts "# Enter command to run (use arrow keys for history):"
+  unless $cmd_to_run
+    puts '# Enter command to run (use arrow keys for history):'
     $cmd_to_run = Chake::Readline::Commands.readline
   end
   if !$cmd_to_run || $cmd_to_run.strip == ''
     puts
-    puts "I: no command provided, operation aborted."
+    puts 'I: no command provided, operation aborted.'
     exit(1)
   end
 end
 
-task :recipe_input, :recipe do |task,args|
+task :recipe_input, :recipe do |_task, args|
   $recipe_to_apply = args[:recipe]
 
-  if !$recipe_to_apply
+  unless $recipe_to_apply
     recipes = Dir['**/*/recipes/*.rb'].map do |f|
       f =~ %r{(.*/)?(.*)/recipes/(.*).rb$}
-      cookbook = $2
-      recipe = $3
+      cookbook = Regexp.last_match(2)
+      recipe = Regexp.last_match(3)
       recipe = nil if recipe == 'default'
-      [cookbook,recipe].compact.join('::')
+      [cookbook, recipe].compact.join('::')
     end.sort
     puts 'Available recipes:'
 
@@ -275,37 +261,37 @@ task :recipe_input, :recipe do |task,args|
     $recipe_to_apply = Chake::Readline::Recipes.readline
     if !$recipe_to_apply || $recipe_to_apply.empty?
       puts
-      puts "I: no recipe provided, operation aborted."
+      puts 'I: no recipe provided, operation aborted.'
       exit(1)
     end
-    if !recipes.include?($recipe_to_apply)
+    unless recipes.include?($recipe_to_apply)
       abort "E: no such recipe: #{$recipe_to_apply}"
     end
   end
 end
 
-desc "upload to all nodes"
-multitask :upload => Chake.nodes.map { |node| "upload:#{node.hostname}" }
+desc 'upload to all nodes'
+multitask upload: Chake.nodes.map { |node| "upload:#{node.hostname}" }
 
-desc "bootstrap all nodes"
-multitask :bootstrap => Chake.nodes.map { |node| "bootstrap:#{node.hostname}" }
+desc 'bootstrap all nodes'
+multitask bootstrap: Chake.nodes.map { |node| "bootstrap:#{node.hostname}" }
 
-desc "converge all nodes (default)"
-multitask "converge" => Chake.nodes.map { |node| "converge:#{node.hostname}" }
+desc 'converge all nodes (default)'
+multitask 'converge' => Chake.nodes.map { |node| "converge:#{node.hostname}" }
 
-desc "Apply <recipe> on all nodes"
-multitask "apply", [:recipe] => Chake.nodes.map { |node| "apply:#{node.hostname}" }
+desc 'Apply <recipe> on all nodes'
+multitask 'apply', [:recipe] => Chake.nodes.map { |node| "apply:#{node.hostname}" }
 
-desc "run <command> on all nodes"
+desc 'run <command> on all nodes'
 multitask :run, [:command] => Chake.nodes.map { |node| "run:#{node.hostname}" }
 
-task :default => :converge
+task default: :converge
 
 desc 'checks connectivity and setup on all nodes'
-multitask :check => (Chake.nodes.map { |node| "check:#{node.hostname}" }) do
-  puts "✓ all hosts OK"
-  puts "  - ssh connection works"
-  puts "  - password-less sudo works"
+multitask check: (Chake.nodes.map { |node| "check:#{node.hostname}" }) do
+  puts '✓ all hosts OK'
+  puts '  - ssh connection works'
+  puts '  - password-less sudo works'
 end
 
 desc 'runs a Ruby console in the chake environment'

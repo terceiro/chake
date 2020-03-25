@@ -1,4 +1,4 @@
-$:.unshift '../../lib' # this shouldn't be needed when you have chake installed
+$LOAD_PATH.unshift '../../lib' # this shouldn't be needed when you have chake installed
 require 'chake'
 
 manifest = %w[

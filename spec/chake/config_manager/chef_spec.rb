@@ -3,7 +3,7 @@ require 'chake/config_manager/chef'
 
 describe Chake::ConfigManager::Chef do
   let(:node) do
-    Chake::Node.new("foobar")
+    Chake::Node.new('foobar')
   end
 
   subject do
@@ -11,7 +11,7 @@ describe Chake::ConfigManager::Chef do
   end
 
   it 'provides a name' do
-    expect(subject.name).to eq("chef")
+    expect(subject.name).to eq('chef')
   end
 
   it 'calls chef-solo on converge' do
@@ -28,12 +28,11 @@ describe Chake::ConfigManager::Chef do
 
   context 'logging' do
     it 'logs when requested' do
-      expect(subject.send(:logging)).to eq("")
+      expect(subject.send(:logging)).to eq('')
     end
     it 'only show fatal errrrs when requested' do
       node.silent = true
-      expect(subject.send(:logging)).to eq("-l fatal")
+      expect(subject.send(:logging)).to eq('-l fatal')
     end
   end
-
 end

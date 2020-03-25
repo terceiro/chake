@@ -3,7 +3,6 @@ require 'chake/config'
 module Chake
   class ConfigManager
     class Chef < ConfigManager
-
       CONFIG = ENV['CHAKE_CHEF_CONFIG'] || 'config.rb'
 
       def converge
@@ -16,7 +15,7 @@ module Chake
 
       priority 99
 
-      def self.accept?(node)
+      def self.accept?(_node)
         true # this is the default, but after everything else
       end
 

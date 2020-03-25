@@ -1,11 +1,8 @@
 require 'socket'
 
 module Chake
-
   class Connection
-
     class Local < Connection
-
       def command_runner
         ['sh', '-c']
       end
@@ -17,9 +14,6 @@ module Chake
       def skip?
         node.hostname != Socket.gethostname
       end
-
     end
-
   end
-
 end

@@ -1,8 +1,7 @@
 require 'spec_helper'
 
 describe Chake::Connection::Local do
-
-  include_examples "Chake::Connection", Chake::Connection::Local
+  include_examples 'Chake::Connection', Chake::Connection::Local
 
   let(:node) { Chake::Node.new('local://myusername@myhost/srv/chake') }
 

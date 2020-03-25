@@ -1,7 +1,6 @@
 require 'chake/node'
 
 describe Chake::Node do
-
   before do
     ent = double
     allow(ent).to receive(:name).and_return('jonhdoe')
@@ -15,15 +14,15 @@ describe Chake::Node do
     expect(simple.username).to eq('jonhdoe')
   }
   it('writes to specified path') {
-    node = Chake::Node.new("ssh://host.tld/path/to/config")
-    expect(node.path).to eq("/path/to/config")
+    node = Chake::Node.new('ssh://host.tld/path/to/config')
+    expect(node.path).to eq('/path/to/config')
   }
 
   let(:with_username) { Chake::Node.new('username@hostname') }
   it('accepts username') { expect(with_username.username).to eq('username') }
   it('uses ssh') { expect(with_username.connection).to be_an_instance_of(Chake::Connection::Ssh) }
 
-  let(:with_connection) { Chake::Node.new('local://hostname')}
+  let(:with_connection) { Chake::Node.new('local://hostname') }
   it('accepts connection as URI scheme') { expect(with_connection.connection).to be_an_instance_of(Chake::Connection::Local) }
 
   it('wont accept any connection') do
@@ -46,7 +45,7 @@ describe Chake::Node do
     expect(with_port_but_no_scheme.connection.to_s).to eq('ssh')
   end
 
-  [:run, :run_as_root, :rsync_dest].each do |method|
+  %i[run run_as_root rsync_dest].each do |method|
     it("delegates #{method} to connection") do
       node = simple
 
@@ -59,21 +58,19 @@ describe Chake::Node do
     end
   end
 
-  it "delegates converge to config_manager" do
+  it 'delegates converge to config_manager' do
     node = simple
     expect(node.config_manager).to receive(:converge)
     node.converge
   end
 
-  it "delegates apply to config_manager" do
+  it 'delegates apply to config_manager' do
     node = simple
-    expect(node.config_manager).to receive(:apply).with("myrecipe")
-    node.apply("myrecipe")
+    expect(node.config_manager).to receive(:apply).with('myrecipe')
+    node.apply('myrecipe')
   end
 
   it 'falls back to writing to path specified by config manager' do
     expect(simple.path).to eq(simple.config_manager.path)
   end
-
-
 end

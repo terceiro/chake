@@ -4,7 +4,6 @@ require 'chake/config'
 module Chake
   class ConfigManager
     class Shell < ConfigManager
-
       def converge
         commands = node.data['shell'].join(' && ')
         node.run_as_root sh(commands)
@@ -15,7 +14,7 @@ module Chake
       end
 
       def self.accept?(node)
-        node.data.has_key?('shell')
+        node.data.key?('shell')
       end
 
       private

@@ -1,17 +1,14 @@
 module Chake
   class ConfigManager
-
     attr_reader :node
 
     def initialize(node)
       @node = node
     end
 
-    def converge
-    end
+    def converge; end
 
-    def apply(config)
-    end
+    def apply(config); end
 
     def path
       "/var/tmp/#{name}.#{node.username}"
@@ -46,16 +43,15 @@ module Chake
 
     def self.get(node)
       available = @subclasses.sort_by(&:priority)
-      manager = available.find { |c| c.short_name == node.data["config_manager"] }
+      manager = available.find { |c| c.short_name == node.data['config_manager'] }
       manager ||= available.find { |c| c.accept?(node) }
-      raise ArgumentError.new("Can't find configuration manager class for node #{node.hostname}. Available: #{available}.join(', ')}") unless manager
+      raise ArgumentError, "Can't find configuration manager class for node #{node.hostname}. Available: #{available}.join(', ')}" unless manager
       manager.new(node)
     end
 
-    def self.accept?(node)
+    def self.accept?(_node)
       false
     end
-
   end
 end
 

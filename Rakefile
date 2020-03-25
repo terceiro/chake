@@ -1,5 +1,5 @@
 namespace :bundler do
-  require "bundler/gem_tasks"
+  require 'bundler/gem_tasks'
 end
 
 task :test do
@@ -17,7 +17,7 @@ end
 desc 'Create Debian source package'
 task 'build:debsrc' => ['bundler:clobber', 'build:tarball'] do
   dirname = "#{pkg.name}-#{pkg.version}"
-  v = `git describe`.strip.gsub('-', '.').sub(/^v/, '')
+  v = `git describe`.strip.tr('-', '.').sub(/^v/, '')
   chdir 'pkg' do
     sh 'gem2deb', '--no-wnpp-check', '-s', '-p', pkg.name, "#{dirname}.tar.gz"
     sh "rename s/#{pkg.version}/#{v}/ *.orig.tar.gz"
@@ -31,7 +31,7 @@ task 'build:debsrc' => ['bundler:clobber', 'build:tarball'] do
 end
 
 desc 'Builds and installs Debian package'
-task 'deb:install' => 'build:debsrc'do
+task 'deb:install' => 'build:debsrc' do
   chdir "pkg/#{pkg.name}-#{pkg.version}" do
     sh 'dpkg-buildpackage --diff-ignore=version.rb -us -uc'
     sh 'debi'
@@ -48,7 +48,7 @@ end
 file 'pkg/chake.spec' => ['chake.spec.erb', 'lib/chake/version.rb'] do |t|
   require 'erb'
   pkg = Gem::Specification.load('chake.gemspec')
-  template =  ERB.new(File.read('chake.spec.erb'))
+  template = ERB.new(File.read('chake.spec.erb'))
   File.open(t.name, 'w') do |f|
     f.puts(template.result(binding))
   end
@@ -66,7 +66,7 @@ end
 task :check_tag do
   last_tag = `git tag | sort -V`.split.last
   if last_tag == "v#{pkg.version}"
-    fail "Version #{pkg.version} was already released!"
+    raise "Version #{pkg.version} was already released!"
   end
 end
 
@@ -74,13 +74,13 @@ desc 'checks if the latest release is properly documented in ChangeLog.md'
 task :check_changelog do
   begin
     sh 'grep', '^#\s*' + pkg.version.to_s, 'ChangeLog.md'
-  rescue
+  rescue StandardError
     puts "Version #{pkg.version} not documented in ChangeLog.md!"
     raise
   end
 end
 
 desc 'Makes a release'
-task :release => [:check_tag, :check_changelog, :test, 'bundler:release']
+task release: [:check_tag, :check_changelog, :test, 'bundler:release']
 
-task :default => :test
+task default: :test

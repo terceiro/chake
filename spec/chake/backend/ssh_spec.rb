@@ -1,8 +1,7 @@
 require 'spec_helper'
 
 describe Chake::Connection::Ssh do
-
-  include_examples "Chake::Connection", Chake::Connection::Ssh
+  include_examples 'Chake::Connection', Chake::Connection::Ssh
 
   let(:node) { Chake::Node.new('ssh://myuser@myhost/srv/chake') }
 
@@ -33,5 +32,4 @@ describe Chake::Connection::Ssh do
       expect(connection.send(:rsync_ssh)).to eq(['-e', 'ssh -p 2222'])
     end
   end
-
 end

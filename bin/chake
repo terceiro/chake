@@ -4,7 +4,7 @@ require 'rake'
 
 rakefiles = %w[rakefile Rakefile rakefile.rb Rakefile.rb]
 
-if (!rakefiles.any? { |f| File.exist?(f) }) && !ARGV.include?('-f') && !ARGV.include?('--rakefile')
+if rakefiles.none? { |f| File.exist?(f) } && !ARGV.include?('-f') && !ARGV.include?('--rakefile')
   require 'tmpdir'
   require 'fileutils'
 
@@ -24,7 +24,7 @@ end
 
 class Rake::Application
   alias orig_thread_pool thread_pool
-  def thread_pool             # :nodoc:
+  def thread_pool # :nodoc:
     if Chake.respond_to?(:nodes)
       @thread_pool ||= Rake::ThreadPool.new(Chake.nodes.size + 1)
     else

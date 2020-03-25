@@ -6,9 +6,7 @@ require 'chake/connection'
 require 'chake/config_manager'
 
 module Chake
-
   class Node
-
     extend Forwardable
 
     attr_reader :hostname
@@ -22,8 +20,9 @@ module Chake
     def self.max_node_name_length
       @max_node_name_length ||= 0
     end
-    def self.max_node_name_length=(value)
-      @max_node_name_length = value
+
+    class << self
+      attr_writer :max_node_name_length
     end
 
     def initialize(hostname, data = {})
@@ -31,9 +30,7 @@ module Chake
       if !uri.host && ((!uri.scheme && uri.path) || (uri.scheme && uri.opaque))
         uri = URI.parse("ssh://#{hostname}")
       end
-      if uri.path && uri.path.empty?
-        uri.path = nil
-      end
+      uri.path = nil if uri.path && uri.path.empty?
 
       @connection_name = uri.scheme
 
@@ -64,8 +61,5 @@ module Chake
     def path
       @path ||= config_manager.path
     end
-
   end
-
 end
-
