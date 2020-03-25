@@ -69,7 +69,8 @@ module Chake
 
     def self.get(name)
       connection = @connections.find { |b| b.connection_name == name }
-      connection || raise(ArgumentError.new("Invalid connection name: #{name}"))
+      raise(ArgumentError.new("Invalid connection name: #{name}")) unless connection
+      connection
     end
 
   end
