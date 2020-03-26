@@ -1,3 +1,8 @@
+# 0.21.1
+
+* Fix converge when the connection is not already made as root. This bug was
+  introduced by the change in the previous release.
+
 # 0.21
 
 * converge, apply: allow removing data from the node JSON attributes
