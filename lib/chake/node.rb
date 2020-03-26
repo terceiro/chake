@@ -55,6 +55,7 @@ module Chake
 
     def log(msg)
       return if silent
+
       puts("%#{Node.max_node_name_length}<host>s: %<msg>s\n" % { host: hostname, msg: msg })
     end
 
@@ -65,7 +66,7 @@ module Chake
       if incomplete_uri(uri)
         uri = URI.parse("ssh://#{hostname}")
       end
-      uri.path = nil if uri.path && uri.path.empty?
+      uri.path = nil if uri.path.empty?
       uri
     end
 
@@ -75,6 +76,7 @@ module Chake
 
     def set_max_node_length
       return if @hostname.length <= self.class.max_node_name_length
+
       self.class.max_node_name_length = @hostname.length
     end
   end

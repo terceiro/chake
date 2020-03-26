@@ -32,8 +32,8 @@ module Chake
       name.split('::').last.downcase
     end
 
-    def self.priority(n = nil)
-      @priority ||= n || 50
+    def self.priority(new_prioriry = nil)
+      @priority ||= new_prioriry || 50
     end
 
     def self.inherited(klass)
@@ -46,6 +46,7 @@ module Chake
       manager = available.find { |c| c.short_name == node.data['config_manager'] }
       manager ||= available.find { |c| c.accept?(node) }
       raise ArgumentError, "Can't find configuration manager class for node #{node.hostname}. Available: #{available}.join(', ')}" unless manager
+
       manager.new(node)
     end
 
@@ -55,6 +56,6 @@ module Chake
   end
 end
 
-Dir[File.dirname(__FILE__) + '/config_manager/*.rb'].each do |f|
+Dir[File.dirname(__FILE__) + '/config_manager/*.rb'].sort.each do |f|
   require f
 end

@@ -20,11 +20,13 @@ module Chake
 
       def init
         return unless File.exist?(history_file)
+
         @history = File.readlines(history_file).map(&:strip)
       end
 
       def finish
         return if !File.writable?(File.dirname(history_file)) || history.empty?
+
         File.open(history_file, 'w') do |f|
           history.last(500).each do |line|
             f.puts(line)

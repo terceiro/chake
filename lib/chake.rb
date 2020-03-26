@@ -91,6 +91,7 @@ end
 
 def if_files_changed(node, group_name, files)
   return if files.empty?
+
   hash_io = IO.popen(%w[xargs sha1sum], 'w+')
   files.sort.each { |f| hash_io.puts(f) }
   hash_io.close_write

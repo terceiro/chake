@@ -1,22 +1,9 @@
 inherit_from: .rubocop_todo.yml
 
-Style/Documentation:
+Layout/LineLength:
   Enabled: false
 
-Style/GlobalVars:
-  Exclude:
-    - lib/chake.rb
-
-Style/IfUnlessModifier:
-  Enabled: false
-
-Style/GuardClause:
-  Enabled: false
-
-Style/FormatString:
-  EnforcedStyle: percent
-
-Style/SymbolArray:
+Metrics/AbcSize:
   Enabled: false
 
 Metrics/BlockLength:
@@ -25,11 +12,36 @@ Metrics/BlockLength:
 Metrics/MethodLength:
   Enabled: false
 
-Metrics/AbcSize:
-  Enabled: false
-
-Metrics/LineLength:
-  Enabled: false
-
 Metrics/PerceivedComplexity:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/FormatString:
+  EnforcedStyle: percent
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/GlobalVars:
+  Exclude:
+    - lib/chake.rb
+
+Style/GuardClause:
+  Enabled: false
+
+Style/HashEachMethods:
+  Enabled: false
+
+Style/HashTransformKeys:
+  Enabled: false
+
+Style/HashTransformValues:
+  Enabled: false
+
+Style/IfUnlessModifier:
+  Enabled: false
+
+Style/SymbolArray:
   Enabled: false

@@ -10,7 +10,7 @@
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: auto_detection, squiggly, active_support, powerpack, unindent
-Layout/IndentHeredoc:
+Layout/HeredocIndentation:
   Exclude:
     - 'lib/chake.rb'
 
@@ -38,9 +38,3 @@ Naming/HeredocDelimiterNaming:
 Style/ClassAndModuleChildren:
   Exclude:
     - 'bin/chake'
-
-# Offense count: 38
-# Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
-# URISchemes: http, https
-Metrics/LineLength:
-  Max: 408
