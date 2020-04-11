@@ -25,7 +25,7 @@ module Chake
       io.write(cmd)
       io.close_write
       io.each_line do |line|
-        node.log(line.strip)
+        node.log(line.gsub(/\s*$/, ''))
       end
       io.close
       if $CHILD_STATUS

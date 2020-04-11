@@ -22,13 +22,13 @@ shared_examples 'Chake::Connection' do |connection_class|
   let(:connection) { connection_class.new(node) }
 
   it('runs commands') do
-    io = StringIO.new("line 1\nline 2\n")
+    io = StringIO.new("line 1\n  line 2\n")
     expect(IO).to receive(:popen).with(connection.command_runner + ['/bin/sh'], 'w+', Hash).and_return(io)
     expect(io).to receive(:write).with('something').ordered
     expect(io).to receive(:close_write).ordered
     expect(node).to receive(:log).with('$ something')
     expect(node).to receive(:log).with('line 1')
-    expect(node).to receive(:log).with('line 2')
+    expect(node).to receive(:log).with('  line 2')
     connection.run('something')
   end
 
