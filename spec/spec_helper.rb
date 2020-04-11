@@ -19,13 +19,13 @@ shared_examples "Chake::Backend" do |backend_class|
   let(:backend) { backend_class.new(node) }
 
   it('runs commands') do
-    io = StringIO.new("line 1\nline 2\n")
+    io = StringIO.new("line 1\n  line 2\n")
     expect(IO).to receive(:popen).with(backend.command_runner + ['/bin/sh'], mode='w+', Hash).and_return(io)
     expect(io).to receive(:write).with('something').ordered
     expect(io).to receive(:close_write).ordered
     expect(backend).to receive(:printf).with(anything, "myhost", "something")
     expect(backend).to receive(:printf).with(anything, "myhost", "line 1")
-    expect(backend).to receive(:printf).with(anything, "myhost", "line 2")
+    expect(backend).to receive(:printf).with(anything, "myhost", "  line 2")
     backend.run('something')
   end
 

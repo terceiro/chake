@@ -27,7 +27,7 @@ module Chake
       io.write(cmd)
       io.close_write
       io.each_line do |line|
-        printf "%#{Node.max_node_name_length}s: %s\n", node.hostname, line.strip
+        printf "%#{Node.max_node_name_length}s: %s\n", node.hostname, line.gsub(/\s*$/, '')
       end
       io.close
       if $?
