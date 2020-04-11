@@ -1,0 +1,4 @@
+Host test.local
+  IdentityFile .vagrant/machines/default/libvirt/private_key
+
+# vim: ft=sshconfig
