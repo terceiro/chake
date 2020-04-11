@@ -1,3 +1,7 @@
+# 0.21.2
+
+* Chake::Backend#run: don't strip leading whitespace
+
 # 0.21.1
 
 * Fix converge when the connection is not already made as root. This bug was
