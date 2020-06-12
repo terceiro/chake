@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.homepage      = 'https://gitlab.com/terceiro/chake'
   spec.license       = 'MIT'
 
-  spec.files         = Dir['**/*'] - Dir['pkg/**/*']
+  spec.files         = File.read('.manifest').split("\n") + ['.manifest']
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']

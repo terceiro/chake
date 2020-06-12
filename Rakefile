@@ -8,6 +8,8 @@ end
 
 pkg = Gem::Specification.load('chake.gemspec')
 
+task 'bundler:build' => :manifest
+
 task 'build:tarball' => 'bundler:build' do
   chdir 'pkg' do
     sh 'gem2tgz', "#{pkg.name}-#{pkg.version}.gem"
@@ -77,6 +79,16 @@ task :check_changelog do
   rescue StandardError
     puts "Version #{pkg.version} not documented in ChangeLog.md!"
     raise
+  end
+end
+
+desc 'Updates manifest file'
+task :manifest do
+  manifest = File.read('.manifest')
+  git = `git ls-files`
+  if manifest != git
+    File.open('.manifest', 'w') { |f| f.write(git) }
+    sh 'git commit .manifest -m "Update manifest"'
   end
 end
 
