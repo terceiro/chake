@@ -1,4 +1,5 @@
 require 'chake/config'
+require 'chake/tmpdir'
 
 module Chake
   class ConfigManager
