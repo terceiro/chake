@@ -1,12 +1,24 @@
-before_script:
-  - pwd
-  - echo $USER
-  - bundle install --path .bundle
+image: debian:testing
+
+.install: &install
+  - apt-get update && apt-get install -qy ruby asciidoctor ruby-bundler ruby-rspec rubocop ruby-simplecov codespell
 
 tests:
+  before_script: *install
   script:
-    - bundle exec rake
-    - bundle exec rake -f man/Rakefile
-  cache:
-    paths:
-      - .bundle
+    - rake test
+
+manpage:
+  before_script: *install
+  script:
+    - rake -f man/Rakefile
+
+style:
+  before_script: *install
+  script:
+    - rake style
+
+codespell:
+  before_script: *install
+  script:
+    - rake codespell

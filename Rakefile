@@ -100,4 +100,9 @@ task :style do
   sh 'rubocop'
 end
 
-task default: [:test, :style]
+desc 'Check spelling in the source code'
+task :codespell do
+  sh 'codespell', '--skip=.git', '--skip=coverage', '--skip=*.asc'
+end
+
+task default: [:test, :style, :codespell]

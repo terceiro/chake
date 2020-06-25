@@ -100,7 +100,7 @@ password prompts, you can:
 
 ## Checking connectivity and initial host setup
 
-To check whether hosts are correcly configured, you can use the `check` task:
+To check whether hosts are correctly configured, you can use the `check` task:
 
 ```bash
 $ rake check
