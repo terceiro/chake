@@ -31,7 +31,7 @@ module Chake
       if $CHILD_STATUS
         status = $CHILD_STATUS.exitstatus
         if status != 0
-          raise CommandFailed, [node.hostname, 'FAILED with exit status %Mstatus>d' % { status: status }].join(': ')
+          raise CommandFailed, [node.hostname, 'FAILED with exit status %<status>d' % { status: status }].join(': ')
         end
       end
     end
