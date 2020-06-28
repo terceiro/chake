@@ -16,4 +16,9 @@ describe Chake::ConfigManager do
       expect(Pathname(path)).to exist
     end
   end
+
+  it 'requires uploading and bootstrapping by default' do
+    expect(subject.needs_upload?).to eq(true)
+    expect(subject.needs_bootstrap?).to eq(true)
+  end
 end

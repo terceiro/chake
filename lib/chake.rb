@@ -141,8 +141,8 @@ Chake.nodes.each do |node|
 
   desc "bootstrap #{hostname}"
   task "bootstrap:#{hostname}" => :bootstrap_common do
-    if !File.exist?(bootstrap_script) || File.read(bootstrap_script) != bootstrap_code
-      mkdir_p Chake.tmpdir
+    mkdir_p Chake.tmpdir unless File.directory?(Chake.tmpdir)
+    if node.needs_bootstrap? && (!File.exist?(bootstrap_script) || File.read(bootstrap_script) != bootstrap_code)
 
       # create bootstrap script
       File.open(bootstrap_script, 'w') do |f|
@@ -166,6 +166,8 @@ Chake.nodes.each do |node|
 
   desc "upload data to #{hostname}"
   task "upload:#{hostname}" => :upload_common do
+    next unless node.needs_upload?
+
     encrypted = encrypted_for(hostname)
     rsync_excludes = (encrypted.values + encrypted.keys).map { |f| ['--exclude', f] }.flatten
     rsync_excludes << '--exclude' << '.git/'

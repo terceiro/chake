@@ -28,6 +28,14 @@ module Chake
       steps.sort_by { |f| File.basename(f) }
     end
 
+    def needs_bootstrap?
+      true
+    end
+
+    def needs_upload?
+      true
+    end
+
     def self.short_name
       name.split('::').last.downcase
     end
