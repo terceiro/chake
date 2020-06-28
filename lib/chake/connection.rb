@@ -24,6 +24,10 @@ module Chake
       io = IO.popen(command_runner + ['/bin/sh'], 'w+', err: %i[child out])
       io.write(cmd)
       io.close_write
+      read_output(io)
+    end
+
+    def read_output(io)
       io.each_line do |line|
         node.log(line.gsub(/\s*$/, ''))
       end
