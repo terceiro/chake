@@ -3,7 +3,11 @@ require 'chake/config_manager'
 require 'chake/config_manager/shell'
 
 describe Chake::ConfigManager::Shell do |_c|
-  let(:node) { Chake::Node.new('foobar') }
+  let(:node) do
+    Chake::Node.new('foobar').tap do |n|
+      allow(n).to receive(:path).and_return(nil)
+    end
+  end
   it 'accepts node with explicit config_manager in data' do
     node.data['config_manager'] = 'shell'
     expect(Chake::ConfigManager.get(node)).to be_a(Chake::ConfigManager::Shell)
@@ -18,6 +22,13 @@ describe Chake::ConfigManager::Shell do |_c|
   it 'calls all shell commands on converge' do
     node.data['shell'] = %w[date true]
     expect(node).to receive(:run_as_root).with("sh -xec 'date && true'")
+    subject.converge
+  end
+
+  it 'changes to node path to run commands' do
+    node.data['shell'] = %w[true]
+    allow(node).to receive(:path).and_return('/foo')
+    expect(node).to receive(:run_as_root).with("sh -xec 'cd /foo && true'")
     subject.converge
   end
 

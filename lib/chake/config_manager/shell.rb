@@ -20,6 +20,9 @@ module Chake
       private
 
       def sh(command)
+        if node.path
+          command = "cd #{node.path} && " + command
+        end
         if node.silent
           "sh -ec '#{command}' >/dev/null"
         else
