@@ -1,3 +1,5 @@
+require 'pathname'
+
 module Chake
   class ConfigManager
     attr_reader :node
@@ -60,6 +62,27 @@ module Chake
 
     def self.accept?(_node)
       false
+    end
+
+    def self.all
+      @subclasses
+    end
+
+    def self.init
+      skel = Pathname(__FILE__).parent / 'config_manager' / 'skel' / short_name
+      skel.glob('**/*').each do |source|
+        target = source.relative_path_from(skel)
+        if target.exist?
+          puts "exists: #{target}"
+        else
+          if source.directory?
+            FileUtils.mkdir_p target
+          else
+            FileUtils.cp source, target
+          end
+          puts "create: #{target}"
+        end
+      end
     end
   end
 end

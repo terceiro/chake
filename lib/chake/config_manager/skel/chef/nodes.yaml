@@ -1,0 +1,3 @@
+host1.mycompany.com:
+  run_list:
+    - recipe[basics]

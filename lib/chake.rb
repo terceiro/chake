@@ -5,68 +5,13 @@ require 'tmpdir'
 require 'chake/config'
 require 'chake/version'
 require 'chake/readline'
-require 'chake/tmpdir'
 
 desc 'Initializes current directory with sample structure'
-task :init do
-  if File.exist?('nodes.yaml')
-    puts '[exists] nodes.yaml'
-  else
-    File.open('nodes.yaml', 'w') do |f|
-      sample_nodes = <<EOF
-host1.mycompany.com:
-  run_list:
-    - recipe[basics]
-EOF
-      f.write(sample_nodes)
-      puts '[create] nodes.yaml'
-    end
-  end
-
-  if File.exist?('nodes.d')
-    puts '[exists] nodes.d/'
-  else
-    FileUtils.mkdir_p 'nodes.d'
-    puts '[ mkdir] nodes.d/'
-  end
-
-  # FIXME: this is chef-specific
-  if File.exist?('config.rb')
-    puts '[exists] config.rb'
-  else
-    File.open('config.rb', 'w') do |f|
-      f.puts 'root = File.expand_path(File.dirname(__FILE__))'
-      f.puts "file_cache_path   root + '/cache'"
-      f.puts "cookbook_path     root + '/cookbooks'"
-      f.puts "role_path         root + '/config/roles'"
-    end
-    puts '[create] config.rb'
-  end
-
-  unless File.exist?('config/roles')
-    FileUtils.mkdir_p 'config/roles'
-    puts '[ mkdir] config/roles'
-  end
-  unless File.exist?('cookbooks/basics/recipes')
-    FileUtils.mkdir_p 'cookbooks/basics/recipes/'
-    puts '[ mkdir] cookbooks/basics/recipes/'
-  end
-  recipe = 'cookbooks/basics/recipes/default.rb'
-  if File.exist?(recipe)
-    puts "[exists] #{recipe}"
-  else
-    File.open(recipe, 'w') do |f|
-      f.puts "package 'openssh-server'"
-    end
-    puts "[create] #{recipe}"
-  end
-  if File.exist?('Rakefile')
-    puts '[exists] Rakefile'
-  else
-    File.open('Rakefile', 'w') do |f|
-      f.puts 'require "chake"'
-      puts '[create] Rakefile'
-    end
+task init: 'init:itamae'
+Chake::ConfigManager.all.map do |cfgmgr|
+  desc "Initializes current directory for #{cfgmgr.short_name}"
+  task "init:#{cfgmgr.short_name}" do
+    cfgmgr.init
   end
 end
 
