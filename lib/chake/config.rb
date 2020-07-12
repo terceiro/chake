@@ -3,7 +3,6 @@ require 'chake/node'
 module Chake
   class << self
     attr_accessor :nodes
-    attr_accessor :tmpdir
   end
 end
 
@@ -15,4 +14,3 @@ Dir.glob(File.join(nodes_directory, '*.yaml')).sort.each do |f|
 end
 
 Chake.nodes = node_data.map { |node, data| Chake::Node.new(node, data) }.reject(&:skip?).uniq(&:hostname)
-Chake.tmpdir = Chake.tmpdir
