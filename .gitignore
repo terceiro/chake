@@ -18,3 +18,5 @@ tmp
 /examples/test/nodes.yaml
 /examples/test/.tmp
 .*.html
+*.1
+*.7

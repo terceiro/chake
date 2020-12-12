@@ -8,10 +8,10 @@ tests:
   script:
     - rake test
 
-manpage:
+manpages:
   before_script: *install
   script:
-    - rake -f man/Rakefile
+    - rake man
 
 style:
   before_script: *install

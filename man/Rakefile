@@ -1,22 +1,35 @@
-task default: 'man/chake.1'
+MAIN_MANPAGE = 'man/chake.1'.freeze
+OTHER_MANPAGES = %w[
+  man/chake-chef.7
+  man/chake-itamae.7
+  man/chake-shell.7
+].freeze
+MANPAGES = [MAIN_MANPAGE] + OTHER_MANPAGES
 
-file 'man/chake.1' => ['man/chake.adoc'] do
-  sh 'asciidoctor --backend manpage --out-file man/chake.1 man/chake.adoc'
+task default: :man
+task man: MANPAGES
+
+MANPAGES.each do |man|
+  source = 'README' + man.pathmap('%n').sub(/^chake/, '').sub('-', '.') + '.md'
+  file man => [source, 'man/readme2man.sed'] do
+    sh "sed -f man/readme2man.sed #{source} > #{man}.ronn || (rm -f #{man}.ronn; false)"
+    sh "ronn --roff #{man}.ronn"
+    sh "rm -f #{man}.ronn"
+  end
 end
 
-file 'man/chake.adoc' => ['README.md', 'man/readme2man.sed'] do |t|
-  sh "sed -f man/readme2man.sed README.md > #{t.name} || (rm -f #{t.name}; false)"
-end
-
-task install: 'man/chake.1' do
+task install: MANPAGES do
   prefix = ENV['PREFIX'] || File.exist?('debian/rules') && '/usr' || '/usr/local'
-  target = [ENV['DESTDIR'], prefix, 'share/man/man1'].compact
-  man = File.join(*target)
-  sh 'install', '-d', '-m', '0755', man
-  sh 'install', '-m', '0644', 'man/chake.1', man
+  man1 = File.join(*[ENV['DESTDIR'], prefix, 'share/man/man1'].compact)
+  man7 = File.join(*[ENV['DESTDIR'], prefix, 'share/man/man7'].compact)
+  target = { '.1' => man1, '.7' => man7 }
+  sh 'install', '-d', '-m', '0755', man1
+  sh 'install', '-d', '-m', '0755', man7
+  MANPAGES.each do |m|
+    sh 'install', '-m', '0644', m, target[m.pathmap('%x')]
+  end
 end
 
 task :clean do
-  rm_f 'man/chake.1'
-  rm_f 'man/chake.adoc'
+  rm_f MANPAGES
 end

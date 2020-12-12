@@ -102,7 +102,9 @@ end
 
 desc 'Check spelling in the source code'
 task :codespell do
-  sh 'codespell', '--skip=.git', '--skip=coverage', '--skip=*.asc'
+  sh 'codespell', '--skip=.git', '--skip=coverage', '--skip=*.asc', '--skip=*.swp'
 end
 
 task default: [:test, :style, :codespell]
+
+load './man/Rakefile'

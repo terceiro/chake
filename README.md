@@ -1,42 +1,58 @@
-# chake(1)
+chake(1) -- serverless configuration management tool
+========================================
 
-## NAME
+## SYNOPSIS
 
-chake - serverless configuration with chef
+`chake` init
 
-## Introduction
+`chake` [rake arguments]
 
-chake is a tool that helps you manage multiple hosts with, without the need for
-a chef server. Configuration is managed in a local directory, which should
-probably be under version control with **git(1)** or anything else.
-Configuration is usually deployed via rsync over SSH, and applied by invoking
-**chef-solo(1)** over SSH on each host.
+## Description
 
-## Installation
+chake is a tool that helps you manage multiple hosts without the need for a
+central server. Configuration is managed in a local directory, which should
+(but doesn't need to ) be under version control with **git(1)** or any other
+version control system. áéíóú
 
-    $ gem install chake
+Configuration is deployed to managed hosts remotely, either by invoking a
+configuration management tool that will connect to them, or by first uploading
+the necessary configuration and them remotely running a tool on the hosts.
 
-## Creating the repository
+## Supported configuration managers.
 
-```
-$ chake init
-[create] nodes.yaml
-[ mkdir] nodes.d/
-[create] config.rb
-[ mkdir] config/roles
-[ mkdir] cookbooks/basics/recipes/
-[create] cookbooks/basics/recipes/default.rb
-[create] Rakefile
-```
+chake supports the following configuration management tools:
 
-A brief explanation of the created files:
+* **itamae**: configuration is applied by running the itamae command line tool
+  on the management host; no configuration needs to be uploaded to the managed
+  hosts. See chake-itamae(7) for details.
+* **shell**: the local repository is copied to the host, and the shell commands
+  specified in the node configuration is executed from the directory where that
+  copy is. See chake-shell(7) for details.
+* **chef**: the local repository is copied to the host, and **chef-solo** is
+  executed remotely on the managed host. See chake-chef(7) for details.
 
-* `nodes.yaml`: where you will list the hosts you will be managing, and what recipes to apply to each of them.
-* `nodes.d`: a directory with multiple files in the same format as nodes.yaml. All files matching `*.yaml` in it will be added to the list of nodes.
-* `config.rb`: contains the chef-solo configuration. You can modify it, but usually you won't need to.
-* `config/roles`: directory is where you can put your role definitions.
-* `cookbooks`: directory where you will store your cookbooks. A sample cookbook called "basics" is created, but feel free to remove it and add actual cookbooks.
-* `Rakefile`: Contains just the `require 'chake'` line. You can augment it with other tasks specific to your intrastructure.
+Beyond applying configuration management recipes on the hosts, chake also
+provides useful tools to manage multiple hosts, such as listing nodes, running
+commands against all of them simultaneously, logging in to interactive
+shells, and others.
+
+## creating the repository
+
+    $ chake init[:configmanager]
+
+This will create an initial directory structure. Some of the files are specific
+to your your chosen **configmanager**, which can be one of [SUPPORTED
+CONFIGURATION MANAGERS]. The following files, though, will be common to any
+usage of chake:
+
+* `nodes.yaml`: where you will list the hosts you will be managing, and what
+  recipes to apply to each of them.
+* `nodes.d`: a directory with multiple files in the same format as nodes.yaml.
+  All files matching `*.yaml` in it will be added to the list of nodes.
+* `Rakefile`: Contains just the `require 'chake'` line. You can augment it with
+  other tasks specific to your intrastructure.
+
+If you omit _configmanager_, `itamae` will be used by default.
 
 After the repository is created, you can call either `chake` or `rake`, as they
 are completely equivalent.
@@ -48,9 +64,11 @@ following:
 
 ```yaml
 host1.mycompany.com:
-  run_list:
-    - recipe[basics]
+  itamae:
+    - roles/basic.rb
 ```
+
+The exact contents depends on the chosen configuration management tool.
 
 You can list your hosts with `rake nodes`:
 
@@ -63,11 +81,11 @@ To add more nodes, just append to `nodes.yaml`:
 
 ```yaml
 host1.mycompany.com:
-  run_list:
-    - recipe[basics]
+  itamae:
+    - roles/basic.rb
 host2.mycompany.com:
-  run_list:
-    - recipes[basics]
+  itamae:
+    - roles/basic.rb
 ```
 
 And chake now knows about your new node:
@@ -102,53 +120,51 @@ password prompts, you can:
 
 To check whether hosts are correctly configured, you can use the `check` task:
 
-```bash
+```
 $ rake check
 ```
 
 That will run the the `sudo true` command on each host. If that pass without
-you having to passwords, you are sure that
+you having to type any passwords, it means that:
 
 * you have SSH access to each host; and
 * the user you are connecting as has password-less sudo correctly setup.
 
-```bash
-$ rake check
-```
-
-## Applying cookbooks
+## Applying configuration
 
 Note that by default all tasks that apply to all hosts will run in parallel,
 using rake's support for multitasks. If for some reason you need to prevent
 that, you can pass `-j1` (or --jobs=1`) in the rake invocation. Note that by
 default rake will only run N+4 tasks in parallel, where N is the number of
 cores on the machine you are running it. If you have more than N+4 hosts and
-want all of them to be handled in parallel, you might want o pass `-j` (or
+want all of them to be handled in parallel, you might want to pass `-j` (or
 `--jobs`), without any number, as the last argument; with that rake will have
 no limit on the number of tasks to perform in parallel.
 
-
 To apply the configuration to all nodes, run
 
-```bash
+```
 $ rake converge
 ```
 
 To apply the configuration to a single node, run
 
-```bash
+```
 $ rake converge:$NODE
 ```
 
 To apply a single recipe on all nodes, run
 
-```bash
+```
 $ rake apply[myrecipe]
 ```
 
+What `recipe` is depends on the configuration manager.
+
+
 To apply a single recipe on a specific node, run
 
-```bash
+```
 $ rake apply:$NODE[myrecipe]
 ```
 
@@ -157,11 +173,23 @@ If you don't inform a recipe in the command line, you will be prompted for one.
 To run a shell command on all nodes, run
 
 ```
+$ rake run
+```
+The above will prompt you for a command, then execute it on all nodes.
+
+To pass the command to run in the command line, use the following syntax:
+
+```
 $ rake run[command]
 ```
 
 If the `command` you want to run contains spaces, or other characters that are
-special do the shell, you have to quote them.
+special do the shell, you have to quote them, for example:
+
+```
+$ rake run["cat /etc/hostname"]
+```
+
 
 To run a shell command on a specific node, run
 
@@ -169,28 +197,29 @@ To run a shell command on a specific node, run
 $ rake run:$NODE[command]
 ```
 
-If you don't inform a command in the command line, you will be prompted for
-one.
+As before, if you run just `rake run:$NODE`, you will be prompted for the
+command.
 
-To check the existing tasks, run
+To list all existing tasks, run:
 
-```bash
+```
 $ rake -T
 ```
 
-## Writing cookbooks
+## Writing configuration management code
 
-Since chake is actually a wrapper for Chef Solo, you should read the [chef
-documentation](https://docs.chef.io/). In special, look at the [Chef Solo
-Documentation](https://docs.chef.io/chef_solo.html).
+As chake supports different configuration management tools, the specifics of
+configuration management code depends on the the tool you choose. See the
+corresponding documentation.
 
 ## The node bootstrapping process
 
-When chake acts on a node for the first time, it has to bootstrap it. The
-bootstrapping process includes doing the following:
+Some of the configuration management tools require some software to be
+installed on the managed hosts. When that's the case, chake acts on a node for
+the first time, it has to bootstrap it. The bootstrapping process includes
+doing the following:
 
-- installing chef and rsync
-- disabling the chef client daemon
+- installing and configuring the needed software
 - setting up the hostname
 
 ## Node URLs
@@ -228,7 +257,7 @@ converging. To do this, you just need to enhance the corresponding tasks:
 
 Example:
 
-```
+```ruby
 task :bootstrap_common do
   sh './scripts/pre-bootstrap-checks'
 end
@@ -237,7 +266,8 @@ end
 ### Encrypted files
 
 Any files ending matching `*.gpg` and `*.asc` will be decrypted with GnuPG
-before being sent to the node. You can use them to store passwords and other
+before being sent to the node (for the configuration management tools that
+required files to be sent). You can use them to store passwords and other
 sensitive information (SSL keys, etc) in the repository together with the rest
 of the configuration.
 
@@ -260,7 +290,7 @@ Some times, you will also want or need to prefix your SSH invocations with some
 prefix command in order to e.g. tunnel it through some central exit node. You
 can do this by setting `$CHAKE_SSH_PREFIX` on your environment. Example:
 
-```
+```bash
 CHAKE_SSH_PREFIX=tsocks rake converge
 ```
 
@@ -269,12 +299,13 @@ The above will make all SSH invocations to all hosts be called as `tsocks ssh
 
 ### Converging local host
 
-If you want to manage your local workstation with chake, you can declare a local node like this in `nodes.yaml`:
+If you want to manage your local workstation with chake, you can declare a
+local node using the "local" connection type, like this (in `nodes.yaml`):
 
 ```yaml
 local://thunderbolt:
-  run_list:
-    - role[workstation]
+  itamae:
+    - role/workstation.rb
 ```
 
 To apply the configuration to the local host, you can use the conventional
@@ -286,11 +317,11 @@ declaration. For example:
 
 ```yaml
 local://desktop:
-  run_list:
-    - role[workstation]
+  itamae:
+    - role/workstation.rb
 local://laptop:
-  run_list:
-    - role[workstation]
+  itamae:
+    - role/workstation.rb
 ```
 
 When you run `rake converge` on `desktop`, `laptop` will be skipped, and
@@ -330,13 +361,7 @@ end
 
 ## See also
 
-* **rake(1)**, **chef-solo(1)**
-* Chef documentation: https://docs.chef.io/
-
-## Contributing
-
-1. Fork it ( http://github.com/terceiro/chake/fork )
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+* **rake(1)**
+* **chake-itamae(7)**, https://itamae.kitchen/
+* **chake-shell(7)**
+* **chake-chef(7)**, **chef-solo(1)**, https://docs.chef.io/
