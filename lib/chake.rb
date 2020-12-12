@@ -5,6 +5,7 @@ require 'tmpdir'
 require 'chake/config'
 require 'chake/version'
 require 'chake/readline'
+require 'chake/wipe'
 
 desc 'Initializes current directory with sample structure'
 task init: 'init:itamae'
@@ -31,6 +32,24 @@ def encrypted_for(node)
   encrypted_files = Dir.glob("**/files/{default,host-#{node}}/*.{asc,gpg}") + Dir.glob('**/files/*.{asc,gpg}')
   encrypted_files.each_with_object({}) do |key, hash|
     hash[key] = key.sub(/\.(asc|gpg)$/, '')
+  end
+end
+
+def maybe_decrypt(node)
+  if node.needs_upload?
+    return yield
+  end
+
+  files = encrypted_for(node.hostname)
+  files.each do |encrypted, target|
+    sh "gpg --use-agent --quiet --decrypt --output #{target} #{encrypted}"
+  end
+  begin
+    yield
+  ensure
+    files.each do |_, target|
+      Chake::Wipe.instance.wipe(target)
+    end
   end
 end
 
@@ -151,12 +170,16 @@ Chake.nodes.each do |node|
 
   desc "converge #{hostname}"
   task "converge:#{hostname}" => converge_dependencies do
-    node.converge
+    maybe_decrypt(node) do
+      node.converge
+    end
   end
 
   desc 'apply <recipe> on #{hostname}'
   task "apply:#{hostname}", [:recipe] => %i[recipe_input connect_common] do |_task, _args|
-    node.apply($recipe_to_apply)
+    maybe_decrypt(node) do
+      node.apply($recipe_to_apply)
+    end
   end
   task "apply:#{hostname}" => converge_dependencies
 

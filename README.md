@@ -271,6 +271,14 @@ required files to be sent). You can use them to store passwords and other
 sensitive information (SSL keys, etc) in the repository together with the rest
 of the configuration.
 
+For configuration managers that don't require uploading files to the managed
+node, this decryption will happen right before converging or applying single
+recipes, and the decrypted files will be wiped right after that.
+
+If you use this feature, make sure that you have the `wipe` program installed.
+This way chake will be able to delete the decrypted files in a slightly more
+secure way, after being done with them.
+
 ### repository-local SSH configuration
 
 If you need special SSH configuration parameters, you can create a file called
