@@ -65,6 +65,7 @@ module Chake
     end
 
     def self.inherited(subclass)
+      super
       @connections ||= []
       @connections << subclass
     end

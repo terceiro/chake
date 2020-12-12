@@ -47,6 +47,7 @@ module Chake
     end
 
     def self.inherited(klass)
+      super
       @subclasses ||= []
       @subclasses << klass
     end
