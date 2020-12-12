@@ -16,7 +16,7 @@ module Chake
     end
 
     def rsync_dest
-      node.path + '/'
+      "#{node.path}/"
     end
 
     def run(cmd)
@@ -48,7 +48,7 @@ module Chake
       if node.remote_username == 'root'
         run(cmd)
       else
-        run('sudo ' + cmd)
+        run("sudo #{cmd}")
       end
     end
 

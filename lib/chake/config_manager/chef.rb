@@ -23,7 +23,7 @@ module Chake
       private
 
       def json_config
-        parts = [node.path, Chake.tmpdir, node.hostname + '.json'].compact
+        parts = [node.path, Chake.tmpdir, "#{node.hostname}.json"].compact
         File.join(parts)
       end
 

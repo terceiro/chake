@@ -10,7 +10,7 @@ task default: :man
 task man: MANPAGES
 
 MANPAGES.each do |man|
-  source = 'README' + man.pathmap('%n').sub(/^chake/, '').sub('-', '.') + '.md'
+  source = "README#{man.pathmap('%n').sub(/^chake/, '').sub('-', '.')}.md"
   file man => [source, 'man/readme2man.sed'] do
     sh "sed -f man/readme2man.sed #{source} > #{man}.ronn || (rm -f #{man}.ronn; false)"
     sh "ronn --roff #{man}.ronn"

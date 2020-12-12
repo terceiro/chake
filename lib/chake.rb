@@ -42,7 +42,7 @@ def if_files_changed(node, group_name, files)
   hash_io.close_write
   current_hash = hash_io.read
 
-  hash_file = File.join(Chake.tmpdir, node + '.' + group_name + '.sha1sum')
+  hash_file = File.join(Chake.tmpdir, "#{node}.#{group_name}.sha1sum")
   hash_on_disk = nil
   hash_on_disk = File.read(hash_file) if File.exist?(hash_file)
 
@@ -78,7 +78,7 @@ Chake.nodes.each do |node|
 
   hostname = node.hostname
 
-  bootstrap_script = File.join(Chake.tmpdir, hostname + '.bootstrap')
+  bootstrap_script = File.join(Chake.tmpdir, "#{hostname}.bootstrap")
 
   bootstrap_steps = node.bootstrap_steps
 
@@ -105,7 +105,7 @@ Chake.nodes.each do |node|
     end
 
     # overwrite config with current contents
-    config = File.join(Chake.tmpdir, hostname + '.json')
+    config = File.join(Chake.tmpdir, "#{hostname}.json")
     write_json_file(config, node.data)
   end
 
@@ -142,7 +142,7 @@ Chake.nodes.each do |node|
           end
           puts "#{target} (decrypted)"
         end
-        sh *rsync, rsync_logging, tmpdir + '/', node.rsync_dest
+        sh *rsync, rsync_logging, "#{tmpdir}/", node.rsync_dest
       end
     end
   end

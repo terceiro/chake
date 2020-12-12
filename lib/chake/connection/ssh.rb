@@ -6,7 +6,7 @@ module Chake
       end
 
       def scp_dest
-        ssh_target + ':'
+        "#{ssh_target}:"
       end
 
       def rsync
@@ -14,7 +14,7 @@ module Chake
       end
 
       def rsync_dest
-        [ssh_target, node.path + '/'].join(':')
+        [ssh_target, "#{node.path}/"].join(':')
       end
 
       def command_runner
@@ -32,9 +32,9 @@ module Chake
           begin
             ssh_command = 'ssh'
             if File.exist?(ssh_config_file)
-              ssh_command += ' -F ' + ssh_config_file
+              ssh_command += " -F #{ssh_config_file}"
             end
-            ssh_command += ' -p ' + node.port.to_s if node.port
+            ssh_command += " -p #{node.port}" if node.port
             if ssh_command == 'ssh'
               []
             else

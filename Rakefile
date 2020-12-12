@@ -62,7 +62,7 @@ task 'build:all' => ['build:debsrc', 'build:rpmsrc']
 desc 'lists changes since last release'
 task :changelog do
   last_tag = `git tag | sort -V`.split.last
-  sh 'git', 'shortlog', last_tag + '..'
+  sh 'git', 'shortlog', "#{last_tag}.."
 end
 
 task :check_tag do
@@ -75,7 +75,7 @@ end
 desc 'checks if the latest release is properly documented in ChangeLog.md'
 task :check_changelog do
   begin
-    sh 'grep', '^#\s*' + pkg.version.to_s, 'ChangeLog.md'
+    sh 'grep', "^#\\s*#{pkg.version}", 'ChangeLog.md'
   rescue StandardError
     puts "Version #{pkg.version} not documented in ChangeLog.md!"
     raise

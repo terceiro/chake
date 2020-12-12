@@ -87,6 +87,6 @@ module Chake
   end
 end
 
-Dir[File.dirname(__FILE__) + '/config_manager/*.rb'].sort.each do |f|
+Dir["#{File.dirname(__FILE__)}/config_manager/*.rb"].sort.each do |f|
   require f
 end
