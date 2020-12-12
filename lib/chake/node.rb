@@ -9,11 +9,7 @@ module Chake
   class Node
     extend Forwardable
 
-    attr_reader :hostname
-    attr_reader :port
-    attr_reader :username
-    attr_reader :remote_username
-    attr_reader :data
+    attr_reader :hostname, :port, :username, :remote_username, :data
 
     attr_accessor :silent
 
