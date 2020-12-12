@@ -4,6 +4,7 @@ begin
     minimum_coverage 35.3
     track_files 'lib/**/*.rb'
     add_filter %r{^/spec/}
+    add_filter %r{^/lib/chake/config_manager/skel/}
   end
 rescue LoadError
   puts "W: simplecov not installed, we won't have a coverage report"
