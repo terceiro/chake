@@ -45,3 +45,6 @@ Style/IfUnlessModifier:
 
 Style/SymbolArray:
   Enabled: false
+
+Gemspec/RequiredRubyVersion:
+  Enabled: false
