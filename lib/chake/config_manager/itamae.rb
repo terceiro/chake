@@ -13,10 +13,6 @@ module Chake
         run_itamae(config)
       end
 
-      def needs_bootstrap?
-        false
-      end
-
       def needs_upload?
         false
       end

@@ -12,10 +12,6 @@ describe Chake::ConfigManager::Itamae do
   let(:cfg) { Chake::ConfigManager::Itamae.new(node) }
   let(:output) { StringIO.new("line1\nline2\n") }
 
-  it 'does not require bootstrapping' do
-    expect(cfg.needs_bootstrap?).to eq(false)
-  end
-
   it 'does not require uploading' do
     expect(cfg.needs_upload?).to eq(false)
   end
