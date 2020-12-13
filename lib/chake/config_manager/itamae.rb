@@ -35,6 +35,9 @@ module Chake
           raise NotImplementedError, "Connection type #{node.connection.class} not supported for itamee"
         end
         cmd << "--node-json=#{json_config}"
+        if node.silent
+          cmd << '--log-level=warn'
+        end
         cmd += recipes
         node.log("$ #{cmd.join(' ')}")
         io = IO.popen(cmd, 'r', err: %i[child out])

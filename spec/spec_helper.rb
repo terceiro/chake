@@ -44,3 +44,21 @@ shared_examples 'Chake::Connection' do |connection_class|
     connection.run_as_root('something')
   end
 end
+
+module Helpers
+  def silence(stream)
+    orig_stream = stream.clone
+    begin
+      File.open('/dev/null', 'w') do |f|
+        stream.reopen(f)
+        yield
+      end
+    ensure
+      stream.reopen(orig_stream)
+    end
+  end
+end
+
+RSpec.configure do |c|
+  c.include Helpers
+end
