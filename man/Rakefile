@@ -15,6 +15,7 @@ MANPAGES.each do |man|
     sh "sed -f man/readme2man.sed #{source} > #{man}.ronn || (rm -f #{man}.ronn; false)"
     sh "ronn --roff #{man}.ronn"
     sh "rm -f #{man}.ronn"
+    sh 'sed', '-i', '-e', 's/\\\\\'/\'/', man
   end
 end
 
