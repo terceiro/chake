@@ -22,7 +22,7 @@ task :nodes do
   lengths = fields.map do |f|
     [f.length, Chake.nodes.map { |n| n.send(f).to_s.length }.max].max
   end
-  columns = lengths.map { |l| "%-#{l}s"}.join(" ")
+  columns = lengths.map { |l| "%-#{l}s" }.join(' ')
   puts(columns % fields)
   puts(columns % lengths.map { |l| '-' * l })
   Chake.nodes.each do |node|
