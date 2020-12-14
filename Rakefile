@@ -107,4 +107,6 @@ end
 
 task default: [:test, :style, :codespell]
 
+task clean: 'bundler:clobber'
+
 load './man/Rakefile'
