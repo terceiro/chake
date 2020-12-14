@@ -11,7 +11,7 @@ chake(1) -- serverless configuration management tool
 
 chake is a tool that helps you manage multiple hosts without the need for a
 central server. Configuration is managed in a local directory, which should
-(but doesn't need to ) be under version control with **git(1)** or any other
+(but doesn't need to) be under version control with **git(1)** or any other
 version control system.
 
 Configuration is deployed to managed hosts remotely, either by invoking a
