@@ -25,7 +25,8 @@ examples/test/cookbooks/example/files/host-lemur/test.asc
 examples/test/cookbooks/example/recipes/default.rb
 lib/chake.rb
 lib/chake/bootstrap/00_set_hostname.sh
-lib/chake/bootstrap/chef/01_debian.sh
+lib/chake/bootstrap/chef/01_installed.sh
+lib/chake/bootstrap/chef/02_debian.sh
 lib/chake/bootstrap/chef/99_unsupported.sh
 lib/chake/config.rb
 lib/chake/config_manager.rb
@@ -49,6 +50,7 @@ lib/chake/node.rb
 lib/chake/readline.rb
 lib/chake/tmpdir.rb
 lib/chake/version.rb
+lib/chake/wipe.rb
 man/.gitignore
 man/Rakefile
 man/readme2man.sed
