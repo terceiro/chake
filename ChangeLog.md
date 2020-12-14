@@ -1,3 +1,11 @@
+# 0.81
+
+* bootstrap/chef: exit if chef-solo is available
+* Always bootstrap nodes
+* Decrypt files in place when upload is not needed
+* itamae: handle silent mode
+* manpages: drop accute accent erroneously added by ronn
+
 # 0.80
 
 This release adds support for multiple configuration managers. Chef is now only
