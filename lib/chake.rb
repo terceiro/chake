@@ -19,12 +19,14 @@ end
 desc 'list nodes'
 task :nodes do
   fields = %i[hostname connection config_manager]
-  IO.popen(['column', '-t'], mode: 'w') do |table|
-    table.puts(fields.join(' '))
-    table.puts(fields.map { |f| '-' * f.length }.join(' '))
-    Chake.nodes.each do |node|
-      table.puts fields.map { |f| node.send(f) }.join(' ')
-    end
+  lengths = fields.map do |f|
+    [f.length, Chake.nodes.map { |n| n.send(f).to_s.length }.max].max
+  end
+  columns = lengths.map { |l| "%-#{l}s"}.join(" ")
+  puts(columns % fields)
+  puts(columns % lengths.map { |l| '-' * l })
+  Chake.nodes.each do |node|
+    puts(columns % fields.map { |f| node.send(f) })
   end
 end
 
