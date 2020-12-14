@@ -1,3 +1,8 @@
+# 0.81.1
+
+* manpages: make sure all instances of \' are fixed
+* rake nodes: format output by ourselves
+
 # 0.81
 
 * bootstrap/chef: exit if chef-solo is available
