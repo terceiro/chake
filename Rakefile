@@ -93,7 +93,7 @@ task :manifest do
 end
 
 desc 'Makes a release'
-task release: [:check_tag, :check_changelog, :test, 'bundler:release']
+task release: [:check_tag, :check_changelog, :default, 'bundler:release']
 
 desc 'Check coding style'
 task :style do
