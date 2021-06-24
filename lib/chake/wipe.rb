@@ -9,7 +9,7 @@ module Chake
         system('wipe', '-rfs', file)
       end
     else
-      warn 'W: please install "wipe" program for secure deletion, falling back to unlink(2)'
+      warn 'W: please install the \`wipe\` program for secure deletion, falling back to unlink(2)'
       def wipe(file)
         File.unlink(file)
       end
