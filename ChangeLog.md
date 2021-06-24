@@ -1,3 +1,9 @@
+# 0.82
+
+* gemspec: drop bundler version constraint
+* Chake::Wipe: improve wording in warning message
+* chake/config: store the node definition file in the node data
+
 # 0.81.1
 
 * manpages: make sure all instances of \' are fixed

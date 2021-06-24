@@ -1,3 +1,3 @@
 module Chake
-  VERSION = '0.81.1'.freeze
+  VERSION = '0.82'.freeze
 end
