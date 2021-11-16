@@ -30,6 +30,9 @@ module Chake
           cmd << 'ssh' << "--user=#{node.username}" << "--host=#{node.hostname}"
           cmd += ssh_config
         when Chake::Connection::Local
+          if node.username == 'root'
+            cmd.prepend 'sudo'
+          end
           cmd << 'local'
         else
           raise NotImplementedError, "Connection type #{node.connection.class} not supported for itamee"
