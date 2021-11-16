@@ -38,8 +38,8 @@ module Chake
       name.split('::').last.downcase
     end
 
-    def self.priority(new_prioriry = nil)
-      @priority ||= new_prioriry || 50
+    def self.priority(new_priority = nil)
+      @priority ||= new_priority || 50
     end
 
     def self.inherited(klass)
