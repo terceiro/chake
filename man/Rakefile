@@ -2,6 +2,7 @@ MAIN_MANPAGE = 'man/chake.1'.freeze
 OTHER_MANPAGES = %w[
   man/chake-chef.7
   man/chake-itamae.7
+  man/chake-itamae-remote.7
   man/chake-shell.7
 ].freeze
 MANPAGES = [MAIN_MANPAGE] + OTHER_MANPAGES

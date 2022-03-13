@@ -35,7 +35,11 @@ module Chake
     end
 
     def self.short_name
-      name.split('::').last.downcase
+      name.split('::').last.gsub(/([[:lower:]])([[:upper:]])/) do
+        first = Regexp.last_match(1)
+        last = Regexp.last_match(2).downcase
+        "#{first}-#{last}"
+      end.downcase
     end
 
     def self.priority(new_priority = nil)
