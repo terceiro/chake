@@ -23,7 +23,7 @@ This release adds support for multiple configuration managers. Chef is now only
 one of the options. There is also now support for configuration management with
 itamae, and lightweight configuration management tool inspired by Chef, and via
 shell commands. This should be mostly transparent to current Chef users, but
-new repositories initiatied by chake will use itamae by default.
+new repositories initiated by chake will use itamae by default.
 
 Other notable changes:
 
