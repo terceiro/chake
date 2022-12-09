@@ -1,3 +1,12 @@
+# 0.90
+
+* itamae: use --sudo when root for local backend
+* Chake::ConfigManager: fix typo
+* chake/config: allow aliases in YAML data
+* codespell: ignore tags file
+* ChangeLog.md: fix typo found by codespell
+* Implement new configuration manager: itamae-remote
+
 # 0.82
 
 * gemspec: drop bundler version constraint
