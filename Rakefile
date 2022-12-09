@@ -102,7 +102,7 @@ end
 
 desc 'Check spelling in the source code'
 task :codespell do
-  sh 'codespell', '--skip=.git', '--skip=coverage', '--skip=*.asc', '--skip=*.swp'
+  sh 'codespell', '--skip=.git', '--skip=coverage', '--skip=*.asc', '--skip=*.swp', '--skip=tags'
 end
 
 task default: [:test, :style, :codespell]
