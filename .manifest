@@ -56,6 +56,7 @@ lib/chake/readline.rb
 lib/chake/tmpdir.rb
 lib/chake/version.rb
 lib/chake/wipe.rb
+lib/chake/yaml.rb
 man/.gitignore
 man/Rakefile
 man/readme2man.sed
@@ -68,4 +69,5 @@ spec/chake/config_manager/itamae_spec.rb
 spec/chake/config_manager/shell_spec.rb
 spec/chake/config_manager_spec.rb
 spec/chake/node_spec.rb
+spec/integration_tests_spec.rb
 spec/spec_helper.rb
