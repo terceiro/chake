@@ -1,4 +1,5 @@
 require 'chake/node'
+require 'chake/yaml'
 
 module Chake
   class << self
@@ -8,12 +9,12 @@ end
 
 nodes_file = ENV['CHAKE_NODES'] || 'nodes.yaml'
 nodes_directory = ENV['CHAKE_NODES_D'] || 'nodes.d'
-nodes = File.exist?(nodes_file) && YAML.load_file(nodes_file, aliases: true) || {}
+nodes = File.exist?(nodes_file) && Chake::YAML.load_file(nodes_file) || {}
 nodes.values.each do |node|
   node['chake_metadata'] = { 'definition_file' => nodes_file }
 end
 Dir.glob(File.join(nodes_directory, '*.yaml')).sort.each do |f|
-  file_nodes = YAML.load_file(f, aliases: true)
+  file_nodes = Chake::YAML.load_file(f)
   file_nodes.values.each do |node|
     node['chake_metadata'] = { 'definition_file' => f }
   end
