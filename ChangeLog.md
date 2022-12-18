@@ -1,3 +1,7 @@
+# 0.90.1
+
+* Fix loading node data under ruby < 3.1
+
 # 0.90
 
 * itamae: use --sudo when root for local backend
