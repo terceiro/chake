@@ -1,3 +1,11 @@
+# 0.90.2
+
+- upload: make sure to reupload on config manager changes
+- Apply suggestions by rubocop 1.39.0
+- Chake::Connection: avoid setting constant inside of block
+- rubocop: keep assignment to `test_files` in the gemspec
+- gemspec: set `spec.metadata['rubygems_mfa_required']`
+
 # 0.90.1
 
 * Fix loading node data under ruby < 3.1
