@@ -1,5 +1,6 @@
 module Chake
-  Connection = Struct.new(:node) do
+  Connection = Struct.new(:node)
+  class Connection
     class CommandFailed < RuntimeError
     end
 
