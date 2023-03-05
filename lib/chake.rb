@@ -59,6 +59,7 @@ def if_files_changed(node, group_name, files)
   return if files.empty?
 
   hash_io = IO.popen(%w[xargs sha1sum], 'w+')
+  hash_io.puts(File.join(Chake.tmpdir, "#{node}.bootstrap"))
   files.sort.each { |f| hash_io.puts(f) }
   hash_io.close_write
   current_hash = hash_io.read
@@ -131,7 +132,7 @@ Chake.nodes.each do |node|
   end
 
   desc "upload data to #{hostname}"
-  task "upload:#{hostname}" => :upload_common do
+  task "upload:#{hostname}" => ["bootstrap:#{hostname}", :upload_common] do
     next unless node.needs_upload?
 
     encrypted = encrypted_for(hostname)
