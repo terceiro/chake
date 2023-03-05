@@ -24,4 +24,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'simplecov'
 
   spec.add_dependency 'rake'
+  spec.metadata['rubygems_mfa_required'] = 'true'
 end
