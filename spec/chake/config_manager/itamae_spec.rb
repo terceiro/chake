@@ -61,7 +61,7 @@ describe Chake::ConfigManager::Itamae do
 
   it 'throws an error for unsupported connection' do
     allow(node).to receive(:connection).and_return(Object.new)
-    expect(-> { cfg.converge }).to raise_error(NotImplementedError)
+    expect { cfg.converge }.to raise_error(NotImplementedError)
   end
 
   it 'handles silent mode' do
