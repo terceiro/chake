@@ -21,9 +21,9 @@ MANPAGES.each do |man|
 end
 
 task install: MANPAGES do
-  prefix = ENV['PREFIX'] || File.exist?('debian/rules') && '/usr' || '/usr/local'
-  man1 = File.join(*[ENV['DESTDIR'], prefix, 'share/man/man1'].compact)
-  man7 = File.join(*[ENV['DESTDIR'], prefix, 'share/man/man7'].compact)
+  prefix = ENV['PREFIX'] || (File.exist?('debian/rules') && '/usr') || '/usr/local'
+  man1 = File.join(*[ENV.fetch('DESTDIR', nil), prefix, 'share/man/man1'].compact)
+  man7 = File.join(*[ENV.fetch('DESTDIR', nil), prefix, 'share/man/man7'].compact)
   target = { '.1' => man1, '.7' => man7 }
   sh 'install', '-d', '-m', '0755', man1
   sh 'install', '-d', '-m', '0755', man7

@@ -70,9 +70,7 @@ def if_files_changed(node, group_name, files)
 
   yield if current_hash != hash_on_disk
   FileUtils.mkdir_p(File.dirname(hash_file))
-  File.open(hash_file, 'w') do |f|
-    f.write(current_hash)
-  end
+  File.write(hash_file, current_hash)
 end
 
 def write_json_file(file, data)
@@ -112,9 +110,7 @@ Chake.nodes.each do |node|
     if !File.exist?(bootstrap_script) || File.read(bootstrap_script) != bootstrap_code
 
       # create bootstrap script
-      File.open(bootstrap_script, 'w') do |f|
-        f.write(bootstrap_code)
-      end
+      File.write(bootstrap_script, bootstrap_code)
       chmod 0o755, bootstrap_script
 
       # copy bootstrap script over
@@ -143,7 +139,7 @@ Chake.nodes.each do |node|
     rsync_excludes << '--exclude' << 'local-mode-cache/'
 
     rsync = node.rsync + ['-avp'] + ENV.fetch('CHAKE_RSYNC_OPTIONS', '').split
-    rsync_logging = Rake.application.options.silent && '--quiet' || '--verbose'
+    rsync_logging = (Rake.application.options.silent && '--quiet') || '--verbose'
 
     hash_files = Dir.glob(File.join(Chake.tmpdir, '*.sha1sum'))
     files = Dir.glob('**/*').reject { |f| File.directory?(f) } - encrypted.keys - encrypted.values - hash_files

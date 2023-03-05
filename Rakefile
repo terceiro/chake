@@ -74,12 +74,10 @@ end
 
 desc 'checks if the latest release is properly documented in ChangeLog.md'
 task :check_changelog do
-  begin
-    sh 'grep', "^#\\s*#{pkg.version}", 'ChangeLog.md'
-  rescue StandardError
-    puts "Version #{pkg.version} not documented in ChangeLog.md!"
-    raise
-  end
+  sh 'grep', "^#\\s*#{pkg.version}", 'ChangeLog.md'
+rescue StandardError
+  puts "Version #{pkg.version} not documented in ChangeLog.md!"
+  raise
 end
 
 desc 'Updates manifest file'
@@ -87,7 +85,7 @@ task :manifest do
   manifest = File.read('.manifest')
   git = `git ls-files`
   if manifest != git
-    File.open('.manifest', 'w') { |f| f.write(git) }
+    File.write('.manifest', git)
     sh 'git commit .manifest -m "Update manifest"'
   end
 end

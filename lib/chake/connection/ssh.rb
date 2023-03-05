@@ -44,7 +44,7 @@ module Chake
       end
 
       def ssh_config
-        File.exist?(ssh_config_file) && ['-F', ssh_config_file] || []
+        (File.exist?(ssh_config_file) && ['-F', ssh_config_file]) || []
       end
 
       def ssh_config_file
@@ -60,11 +60,11 @@ module Chake
       end
 
       def ssh_options
-        node.port && ['-p', node.port.to_s] || []
+        (node.port && ['-p', node.port.to_s]) || []
       end
 
       def scp_options
-        node.port && ['-P', node.port.to_s] || []
+        (node.port && ['-P', node.port.to_s]) || []
       end
     end
   end

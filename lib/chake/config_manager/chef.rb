@@ -28,7 +28,7 @@ module Chake
       end
 
       def logging
-        node.silent && '-l fatal' || ''
+        (node.silent && '-l fatal') || ''
       end
     end
   end

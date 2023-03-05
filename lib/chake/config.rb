@@ -9,7 +9,7 @@ end
 
 nodes_file = ENV['CHAKE_NODES'] || 'nodes.yaml'
 nodes_directory = ENV['CHAKE_NODES_D'] || 'nodes.d'
-nodes = File.exist?(nodes_file) && Chake::YAML.load_file(nodes_file) || {}
+nodes = (File.exist?(nodes_file) && Chake::YAML.load_file(nodes_file)) || {}
 nodes.values.each do |node|
   node['chake_metadata'] = { 'definition_file' => nodes_file }
 end

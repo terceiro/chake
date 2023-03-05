@@ -7,8 +7,8 @@ describe 'Chake' do
 
   def sh(*args)
     cmd = Shellwords.join(args)
-    lib = [Pathname.new(__FILE__).parent.parent / 'lib', ENV['RUBYLIB']].compact.join(':')
-    path = [Pathname.new(__FILE__).parent.parent / 'bin', ENV['PATH']].join(':')
+    lib = [Pathname.new(__FILE__).parent.parent / 'lib', ENV.fetch('RUBYLIB', nil)].compact.join(':')
+    path = [Pathname.new(__FILE__).parent.parent / 'bin', ENV.fetch('PATH', nil)].join(':')
     env = {
       'RUBYLIB' => lib,
       'PATH' => path
