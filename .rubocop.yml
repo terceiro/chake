@@ -53,3 +53,6 @@ Style/SymbolArray:
 
 Gemspec/RequiredRubyVersion:
   Enabled: false
+
+Gemspec/DeprecatedAttributeAssignment:
+  Enabled: false
